@@ -1,6 +1,5 @@
-from files.gui import gui
-from files.temp import game_loop
+from files.ChessGUI import gui
+from files.logic import game_loop
 
 if __name__ == "__main__":
-    gui()
-    game_loop()
+    game_loop(gui)
