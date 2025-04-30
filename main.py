@@ -1,4 +1,4 @@
-from files.gui import gui
+from files.ChessGUI import gui
 from files.logic import game_loop
 
 if __name__ == "__main__":
