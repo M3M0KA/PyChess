@@ -17,14 +17,7 @@ def create_board():
     return board
 
 def print_board(board):
-    print("  a  b  c  d  e  f  g  h")
-    for y in range(8):
-        row = f"{8 - y} "
-        for x in range(8):
-            row += str(board[y][x]) if board[y][x] else ".."
-            row += " "
-        print(row + f"{8 - y}")
-    print("  a  b  c  d  e  f  g  h\n")
+    print(board)
 
 def parse_input(move):
     try:
@@ -47,11 +40,11 @@ def move_piece(board, start, end, current_color):
             return True
     return False
 
-def game_loop():
+def game_loop(gui):
     board = create_board()
     current_color = 'W'
     while True:
-        print_board(board)
+        gui.update(board)
         print(f"{'Weiß' if current_color == 'W' else 'Schwarz'} ist am Zug.")
         move = input("Bewege (z.B. e2 e4) oder 'quit': ")
         if move.lower() == 'quit':
