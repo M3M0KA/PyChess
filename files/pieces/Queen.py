@@ -1,4 +1,4 @@
-from .chess_piece import ChessPiece
+from .ChessPiece import ChessPiece
 from .Rook import Rook
 from .Bishop import Bishop
 

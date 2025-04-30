@@ -26,7 +26,7 @@ def draw_board(screen):
     for y in range(8):
         for x in range(8):
             color = GRASS_GREEN if (x + y) % 2 == 0 else DARK_BROWN
-            pygame.draw.rect(screen, color, pygame.Rect(x * square_size, y * square_size, square_size, square_size))
+            pygame.draw.rect(screen, color, pygame.Rect(x * square_size + 160, y * square_size + 160, square_size, square_size))
     
 
 if __name__ == "__main__":
