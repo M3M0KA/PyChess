@@ -63,3 +63,4 @@ class ChessGUI:
                 pygame.draw.rect(screen, color, pygame.Rect(x * square_size + 160, y * square_size + 160, square_size, square_size))
     
 gui = ChessGUI()
+        
