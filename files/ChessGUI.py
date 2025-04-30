@@ -30,7 +30,6 @@ class ChessGUI:
 
                 if os.path.exists(image_path):
                     piece_images[key] = pygame.image.load(image_path)
-                    print(f"Bild geladen: {image_path}")
                 else:
                     print(f"Bild nicht gefunden: {image_path}")
 
@@ -54,7 +53,6 @@ class ChessGUI:
                     if image: 
                         image = pygame.transform.scale(image, (50, 50))
                         screen.blit(image, (x * 60 + 160, y * 60 + 160))
-                        print("image loaded")
                         
 
     def draw_board(self, screen):
@@ -63,8 +61,7 @@ class ChessGUI:
             for x in range(8):
                 color = self.GRASS_GREEN if (x + y) % 2 == 0 else self.DARK_BROWN
                 pygame.draw.rect(screen, color, pygame.Rect(x * square_size + 160, y * square_size + 160, square_size, square_size))
-    
-gui = ChessGUI()
+
 
 if __name__ == "__main__":
     gui = ChessGUI()
