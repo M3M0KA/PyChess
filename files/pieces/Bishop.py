@@ -1,7 +1,7 @@
 from .ChessPiece import ChessPiece
 
 class Bishop(ChessPiece):
-    symbol = 'B'
+    symbol = 'bishop'
 
     def is_valid_move(self, start, end, board):
         x1, y1 = start
