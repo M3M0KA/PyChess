@@ -36,6 +36,7 @@ class ChessGUI:
 
 
     def update(self, board):
+        print(board)
         print("Update GUI")
         self.board = board
         self.draw_board(self.screen)  # ← Brett neu zeichnen
@@ -50,10 +51,11 @@ class ChessGUI:
                 if piece:
                     image_temp = f"{piece.color.lower()}_{piece.symbol.lower()}"
                     image = piece_images.get(image_temp)
-                    print("image loaded")
                     if image: 
                         image = pygame.transform.scale(image, (50, 50))
                         screen.blit(image, (x * 60 + 160, y * 60 + 160))
+                        print("image loaded")
+                        
 
     def draw_board(self, screen):
         square_size = 60  # Grösse Schachfeld
@@ -63,4 +65,20 @@ class ChessGUI:
                 pygame.draw.rect(screen, color, pygame.Rect(x * square_size + 160, y * square_size + 160, square_size, square_size))
     
 gui = ChessGUI()
-        
+
+if __name__ == "__main__":
+    gui = ChessGUI()
+
+    # Beispielbrett mit einer weißen Dame in der Mitte
+    class DummyPiece:
+        def __init__(self, color, symbol):
+            self.color = color
+            self.symbol = symbol
+
+    board = [[None for _ in range(8)] for _ in range(8)]
+    board[3][3] = DummyPiece('w', 'queen')  # c4
+
+    gui.update(board)
+
+    # Haupt-Loop, damit Fenster offen bleibt
+    input("Drücke Enter, um das Fenster zu schließen...")
