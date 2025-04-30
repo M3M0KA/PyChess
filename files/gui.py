@@ -31,5 +31,6 @@ def draw_board(screen):
 
 if __name__ == "__main__":
     gui()
-    input("Drücke Enter um das Programm zu beenden")
+    input("Drücke Enter um das Programm zu beenden...")
+    pygame.quit()
         
