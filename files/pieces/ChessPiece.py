@@ -1,6 +1,7 @@
 class ChessPiece:
-    def __init__(self, color):
+    def __init__(self, color, image):
         self.color = color  # 'W' oder 'B'
+        self.image = image
 
     def is_valid_move(self, start, end, board):
         raise NotImplementedError
