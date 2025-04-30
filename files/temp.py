@@ -1,4 +1,4 @@
-from pieces import Pawn, Rook, Knight, Bishop, Queen, King
+from .pieces import Pawn, Rook, Knight, Bishop, Queen, King
 
 # Spielbrett initialisieren
 def create_board():

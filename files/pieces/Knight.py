@@ -1,4 +1,4 @@
-from .chess_piece import ChessPiece
+from .ChessPiece import ChessPiece
 
 class Knight(ChessPiece):
     symbol = 'N'
