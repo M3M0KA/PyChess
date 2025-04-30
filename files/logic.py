@@ -45,7 +45,7 @@ def game_loop(gui):
     current_color = 'W'
     while True:
         gui.update(board)
-        print(f"{'Weiß' if current_color == 'W' else 'Schwarz'} ist am Zug.")
+        print(f"{'Weiss' if current_color == 'W' else 'Schwarz'} ist am Zug.")
         move = input("Bewege (z.B. e2 e4) oder 'quit': ")
         if move.lower() == 'quit':
             break
