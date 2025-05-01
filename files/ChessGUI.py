@@ -1,5 +1,7 @@
 import pygame
 import os
+from .logic import move_piece, create_board
+
 
 IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'images')
 piece_images = {}
@@ -8,6 +10,7 @@ colors = ['w', 'b']
 
 class ChessGUI:
     def __init__(self):
+        self.current_color = 'W'
         self.temp1 = None
         self.load_images()
         self.GREEN = (118, 150, 86)
@@ -36,9 +39,7 @@ class ChessGUI:
 
 
     def update(self, board):
-        print(board)
         print("Update GUI")
-        self.board = board
         self.draw_board(self.screen)
         self.draw_pieces(board, self.screen)
         pygame.display.flip()
@@ -72,17 +73,32 @@ class ChessGUI:
             if self.temp1 is None:
                 self.temp1 = (x, y)
             else:
-                temp2 = (x, y)
-                print(f"Zug von {self.temp1} nach {temp2}")
-
+                self.temp2 = (x, y)
+                move_piece
+                start, end = self.temp1, self.temp2
+                if start and end:
+                    if move_piece(self.board, start, end, self.current_color):
+                        self.current_color = 'B' if self.current_color == 'W' else 'W'
+                    else:
+                        print("Ungültiger Zug!")
+                else:
+                    print("Eingabefehler!")
+                print(f"Zug von {self.temp1} nach {self.temp2}")
+                self.update(self.board)
+                self.temp1 = None
+                self.temp2 = None
 
     def run(self):
+        self.board = create_board()
+        self.update(self.board)
+        running = True
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_click(event.pos)
+                
 
 if __name__ == "__main__":
     gui = ChessGUI()

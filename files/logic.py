@@ -16,8 +16,6 @@ def create_board():
     
     return board
 
-def print_board(board):
-    print(board)
 
 def parse_input(move):
     try:
