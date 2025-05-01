@@ -72,6 +72,8 @@ class ChessGUI:
             print(f"Klick auf Feld: ({x}, {y})")
             if self.temp1 is None:
                 self.temp1 = (x, y)
+                pygame.draw.rect(self.screen, (255, 0, 0), (x * 60 + 160, y * 60 + 160, 60, 60), 3)
+                pygame.display.flip()
             else:
                 self.temp2 = (x, y)
                 move_piece
