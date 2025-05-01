@@ -93,28 +93,13 @@ class ChessGUI:
     def run(self):
         self.board = create_board()
         self.update(self.board)
-        running = True
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    self.handle_click(event.pos)
+            try:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        self.handle_click(event.pos)
+            except Exception as e:
+                break
                 
-
-if __name__ == "__main__":
-    gui = ChessGUI()
-
-    # Beispielbrett mit einer weißen Dame in der Mitte
-    class DummyPiece:
-        def __init__(self, color, symbol):
-            self.color = color
-            self.symbol = symbol
-
-    board = [[None for _ in range(8)] for _ in range(8)]
-    board[3][3] = DummyPiece('w', 'queen')  # d5
-
-    gui.update(board)
-
-    # Haupt-Loop, damit Fenster offen bleibt
-    input("Drücke Enter, um das Fenster zu schließen...")
