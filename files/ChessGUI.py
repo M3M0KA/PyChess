@@ -38,7 +38,7 @@ class ChessGUI:
         print(board)
         print("Update GUI")
         self.board = board
-        self.draw_board(self.screen)  # ← Brett neu zeichnen
+        self.draw_board(self.screen)
         self.draw_pieces(board, self.screen)
         pygame.display.flip()
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
             self.symbol = symbol
 
     board = [[None for _ in range(8)] for _ in range(8)]
-    board[3][3] = DummyPiece('w', 'queen')  # c4
+    board[3][3] = DummyPiece('w', 'queen')  # d5
 
     gui.update(board)
 
