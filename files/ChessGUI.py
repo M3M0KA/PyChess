@@ -39,7 +39,6 @@ class ChessGUI:
 
 
     def update(self, board):
-        print("Update GUI")
         self.draw_board(self.screen)
         self.draw_pieces(board, self.screen)
         pygame.display.flip()
@@ -69,14 +68,12 @@ class ChessGUI:
         x = (x - 160) // 60
         y = (y - 160) // 60
         if 0 <= x < 8 and 0 <= y < 8:
-            print(f"Klick auf Feld: ({x}, {y})")
             if self.temp1 is None:
                 self.temp1 = (x, y)
                 pygame.draw.rect(self.screen, (255, 0, 0), (x * 60 + 160, y * 60 + 160, 60, 60), 3)
                 pygame.display.flip()
             else:
                 self.temp2 = (x, y)
-                move_piece
                 start, end = self.temp1, self.temp2
                 if start and end:
                     if move_piece(self.board, start, end, self.current_color):
@@ -85,19 +82,34 @@ class ChessGUI:
                         print("Ungültiger Zug!")
                 else:
                     print("Eingabefehler!")
-                print(f"Zug von {self.temp1} nach {self.temp2}")
                 self.update(self.board)
                 self.temp1 = None
                 self.temp2 = None
 
+    def promotion_options(self, screen):
+        font = pygame.font.Font(None, 36)
+        choices = {
+            'Dame': (100, 100),
+            'Turm': (200, 100),
+            'Läufer': (300, 100),
+            'Springer': (400, 100)
+        }
+        for text, pos in choices.items():
+            text = font.render(text, True, (0, 0, 0))
+            button = pygame.Rect(pos[0], pos[1], 100, 50)
+            pygame.draw.rect(screen, (0, 0, 0), button)
+            screen.blit(text, (button.x + 10, button.y + 10))
+        
+
     def run(self):
         self.board = create_board()
         self.update(self.board)
-        while True:
+        running = True
+        while running:
             try:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        pygame.quit()
+                        running = False
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         self.handle_click(event.pos)
             except Exception as e:
