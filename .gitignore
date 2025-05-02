@@ -4,7 +4,7 @@ files/__pycache__/
 *$py.class
 
 build/
-dist/
+
 # C extensions
 *.so
 
