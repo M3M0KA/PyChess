@@ -35,8 +35,8 @@ def move_piece(board, start, end, current_color, gui = None):
         if target is None or target.color != current_color:
             if isinstance(piece, Pawn):
                 if piece.turn_to_differentpiece(y2):
-                    #gui.promotion_options(gui.screen)
-                    new_piece = input(f"Zu was möchtest du den Bauern verwandeln? (Dame, Turm, Läufer, Springer): ")
+                    gui.promotion_options(gui.screen)
+                    new_piece = gui.wait_for_promotion()
                     if new_piece.lower() == 'dame':
                         board[y2][x2] = Queen(piece.color)
                         board[y1][x1] = None
