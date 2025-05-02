@@ -19,3 +19,9 @@ class Pawn(ChessPiece):
         if abs(x2 - x1) == 1 and y2 == y1 + direction and board[y2][x2] is not None and board[y2][x2].color != self.color:
             return True
         return False
+    
+    def turn_to_differentpiece(self, end_y):
+        if self.color == 'B' and end_y == 7:
+            return True
+        if self.color == 'W' and end_y == 0:
+            return True

@@ -26,13 +26,34 @@ def parse_input(move):
     except:
         return None, None
 
-def move_piece(board, start, end, current_color):
+def move_piece(board, start, end, current_color, gui = None):
     x1, y1 = start
     x2, y2 = end
     piece = board[y1][x1]
     if piece and piece.color == current_color and piece.is_valid_move((x1, y1), (x2, y2), board):
         target = board[y2][x2]
         if target is None or target.color != current_color:
+            if isinstance(piece, Pawn):
+                if piece.turn_to_differentpiece(y2):
+                    #gui.promotion_options(gui.screen)
+                    new_piece = input(f"Zu was möchtest du den Bauern verwandeln? (Dame, Turm, Läufer, Springer): ")
+                    if new_piece.lower() == 'dame':
+                        board[y2][x2] = Queen(piece.color)
+                        board[y1][x1] = None
+                        return True
+                    if new_piece.lower() == 'turm':
+                        board[y2][x2] = Rook(piece.color)
+                        board[y1][x1] = None
+                        return True
+                    if new_piece.lower() == 'läufer':
+                        board[y2][x2] = Bishop(piece.color)
+                        board[y1][x1] = None
+                        return True
+                    if new_piece.lower() == 'springer':
+                        board[y2][x2] = Knight(piece.color)
+                        board[y1][x1] = None
+                        return True
+                       
             board[y2][x2] = piece
             board[y1][x1] = None
             return True
