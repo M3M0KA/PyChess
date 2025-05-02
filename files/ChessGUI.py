@@ -76,7 +76,7 @@ class ChessGUI:
                 self.temp2 = (x, y)
                 start, end = self.temp1, self.temp2
                 if start and end:
-                    if move_piece(self.board, start, end, self.current_color):
+                    if move_piece(self.board, start, end, self.current_color, self):
                         self.current_color = 'B' if self.current_color == 'W' else 'W'
                     else:
                         print("Ungültiger Zug!")
@@ -87,31 +87,55 @@ class ChessGUI:
                 self.temp2 = None
 
     def promotion_options(self, screen):
-        font = pygame.font.Font(None, 36)
+        font = pygame.font.Font(None, 30)
+        self.size_temp = 147.5
         choices = {
-            'Dame': (100, 100),
-            'Turm': (200, 100),
-            'Läufer': (300, 100),
-            'Springer': (400, 100)
-        }
-        for text, pos in choices.items():
-            text = font.render(text, True, (0, 0, 0))
-            button = pygame.Rect(pos[0], pos[1], 100, 50)
-            pygame.draw.rect(screen, (0, 0, 0), button)
+            'Dame': (145, 100),
+            'Turm': (275, 100),
+            'Läufer': (405, 100),
+            'Springer': (535, 100)
+        }   
+        for name, pos in choices.items():
+            text = font.render(name, True, (0, 0, 0))
+            button = pygame.Rect(pos[0], pos[1], 120, 50)
+            pygame.draw.rect(screen, (200, 200, 200), button)
             screen.blit(text, (button.x + 10, button.y + 10))
+        pygame.display.flip()
         
+    def wait_for_promotion(self):
+        background = pygame.Rect(0, 100, 1000, 50)
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = event.pos
+                    if x > 145 and x < 265 and y > 100 and y < 150:
+                        pygame.draw.rect(self.screen, (234, 255, 123), background)
+                        pygame.display.flip()
+                        return 'Dame'
+                    if x > 275 and x < 395 and y > 100 and y < 150:
+                        pygame.draw.rect(self.screen, (234, 255, 123), background)
+                        pygame.display.flip()
+                        return 'Turm'
+                    if x > 405 and x < 525 and y > 100 and y < 150:
+                        pygame.draw.rect(self.screen, (234, 255, 123), background)
+                        pygame.display.flip()
+                        return 'Läufer'
+                    if x > 535 and x < 655 and y > 100 and y < 150:
+                        pygame.draw.rect(self.screen, (234, 255, 123), background)
+                        pygame.display.flip()
+                        return 'Springer'
 
     def run(self):
         self.board = create_board()
         self.update(self.board)
         running = True
         while running:
-            try:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        running = False
-                    elif event.type == pygame.MOUSEBUTTONDOWN:
-                        self.handle_click(event.pos)
-            except Exception as e:
-                break
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.handle_click(event.pos)
                 
