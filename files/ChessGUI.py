@@ -69,9 +69,12 @@ class ChessGUI:
         y = (y - 160) // 60
         if 0 <= x < 8 and 0 <= y < 8:
             if self.temp1 is None:
-                self.temp1 = (x, y)
-                pygame.draw.rect(self.screen, (255, 0, 0), (x * 60 + 160, y * 60 + 160, 60, 60), 3)
-                pygame.display.flip()
+                if self.board[y][x] is None or self.board[y][x].color != self.current_color:
+                    return
+                else:
+                    self.temp1 = (x, y)
+                    pygame.draw.rect(self.screen, (255, 0, 0), (x * 60 + 160, y * 60 + 160, 60, 60), 3)
+                    pygame.display.flip()
             else:
                 self.temp2 = (x, y)
                 start, end = self.temp1, self.temp2
