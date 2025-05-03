@@ -1,4 +1,6 @@
 from .pieces import Pawn, Rook, Knight, Bishop, Queen, King
+import copy
+
 
 # Spielbrett initialisieren
 def create_board():
@@ -33,6 +35,15 @@ def move_piece(board, start, end, current_color, gui = None):
     if piece and piece.color == current_color and piece.is_valid_move((x1, y1), (x2, y2), board):
         target = board[y2][x2]
         if target is None or target.color != current_color:
+            temp_board = copy.deepcopy(board)
+            temp_board[y1][x1] = None
+            temp_board[y2][x2] = piece
+            if is_check(temp_board, "W", find_king(temp_board, 'W')) and current_color == 'W':
+                print("Weisser König im Schach!")
+                return False
+            if is_check(temp_board, "B", find_king(temp_board, 'B')) and current_color == 'B':
+                print("Schwarzer König im Schach!")
+                return False
             if isinstance(piece, Pawn):
                 if piece.turn_to_differentpiece(y2):
                     gui.promotion_options(gui.screen)
@@ -52,15 +63,9 @@ def move_piece(board, start, end, current_color, gui = None):
                     if new_piece.lower() == 'springer':
                         board[y2][x2] = Knight(piece.color)
                         board[y1][x1] = None
-                        return True
-
-                       
+                        return True           
             board[y2][x2] = piece
             board[y1][x1] = None
-            if is_check(board, "W", find_king(board, 'W')):
-                print("Weisser König im Schach!")
-            if is_check(board, "B", find_king(board, 'B')):
-                print("Schwarzer König im Schach!")
             return True
     return False
 
