@@ -28,7 +28,7 @@ def parse_input(move):
     except:
         return None, None
 
-def move_piece(board, start, end, current_color, gui = None):
+def move_piece(board, start, end, current_color, gui):
     x1, y1 = start
     x2, y2 = end
     piece = board[y1][x1]
@@ -40,9 +40,13 @@ def move_piece(board, start, end, current_color, gui = None):
             temp_board[y2][x2] = piece
             if is_check(temp_board, "W", find_king(temp_board, 'W')) and current_color == 'W':
                 print("Weisser König im Schach!")
+                if is_checkmate(temp_board, 'W'):
+                    print("Schachmatt! Weisser König ist geschlagen.")
                 return False
             if is_check(temp_board, "B", find_king(temp_board, 'B')) and current_color == 'B':
                 print("Schwarzer König im Schach!")
+                if is_checkmate(temp_board, 'B'):
+                    print("Schachmatt! Schwarzer König ist geschlagen.")
                 return False
             if isinstance(piece, Pawn):
                 if piece.turn_to_differentpiece(y2):
@@ -85,6 +89,21 @@ def is_check(board, king_color, king_pos):
                 if piece.is_valid_move((x, y), king_pos, board):
                     return True
 
+def is_checkmate(board, king_color):
+    for y in range(8):
+        for x in range(8):
+            piece = board[y][x]
+            if piece and piece.color == king_color:
+                for temp_y in range(8):
+                    for temp_x in range(8):
+                        if piece.is_valid_move((x, y), (temp_x, temp_y), board):
+                            temp_board = copy.deepcopy(board)
+                            temp_board[temp_y][temp_x] = piece
+                            temp_board[y][x] = None
+                            if not is_check(temp_board, king_color, find_king(temp_board, king_color)) and temp_board[temp_y][temp_x] == None:
+                                print(temp_x, temp_y, piece.color, piece.symbol)
+                                return False
+    return True
 
 def game_loop(gui):
     board = create_board()
