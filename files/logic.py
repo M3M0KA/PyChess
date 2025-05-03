@@ -53,11 +53,33 @@ def move_piece(board, start, end, current_color, gui = None):
                         board[y2][x2] = Knight(piece.color)
                         board[y1][x1] = None
                         return True
+
                        
             board[y2][x2] = piece
             board[y1][x1] = None
+            if is_check(board, "W", find_king(board, 'W')):
+                print("Weisser König im Schach!")
+            if is_check(board, "B", find_king(board, 'B')):
+                print("Schwarzer König im Schach!")
             return True
     return False
+
+def find_king(board, wanted_king_color):
+    for y in range(8):
+        for x in range(8):
+            piece = board[y][x]
+            if isinstance(piece, King) and piece.color == wanted_king_color:
+                return (x, y)
+    return None
+
+def is_check(board, king_color, king_pos):
+    for y in range(8):
+        for x in range(8):
+            piece = board[y][x]
+            if piece and piece.color != king_color:
+                if piece.is_valid_move((x, y), king_pos, board):
+                    return True
+
 
 def game_loop(gui):
     board = create_board()
