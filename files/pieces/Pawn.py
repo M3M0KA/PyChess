@@ -9,13 +9,13 @@ class Pawn(ChessPiece):
         direction = -1 if self.color == 'W' else 1
         start_row = 6 if self.color == 'W' else 1
 
-        # Ein Schritt vorwärts
+
         if x1 == x2 and y2 == y1 + direction and board[y2][x2] is None:
             return True
-        # Zwei Schritte vom Startfeld
+
         if x1 == x2 and y1 == start_row and y2 == y1 + 2 * direction and board[y1 + direction][x1] is None and board[y2][x2] is None:
             return True
-        # Schlagen
+
         if abs(x2 - x1) == 1 and y2 == y1 + direction and board[y2][x2] is not None and board[y2][x2].color != self.color:
             return True
         return False
@@ -25,3 +25,4 @@ class Pawn(ChessPiece):
             return True
         if self.color == 'W' and end_y == 0:
             return True
+        return False

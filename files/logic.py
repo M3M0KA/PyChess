@@ -1,4 +1,4 @@
-from .pieces import Pawn, Rook, Knight, Bishop, Queen, King
+from .pieces import Pawn, Rook, Knight, Bishop, Queen, King, EnPassantGhost, ChessPiece
 import copy
 
 
@@ -93,7 +93,14 @@ def move_piece(board, start, end, current_color, gui):
     x1, y1 = start
     x2, y2 = end
     piece = board[y1][x1]
+    for y in range(8):
+        for x in range(8):
+            if isinstance(board[y][x], EnPassantGhost):
+                if board[y][x].color == current_color:
+                    board[y][x] = None
     
+
+
     if current_color == 'W' and isinstance(piece, King):
         if not w_has_king_moved and y1 == 7 and x1 == 4:
             if x2 == 6 and not w_has_right_rook_moved:
@@ -191,7 +198,21 @@ def move_piece(board, start, end, current_color, gui):
                         b_has_left_rook_moved = True
                     elif x1 == 7:
                         b_has_right_rook_moved = True
-            
+
+            if isinstance(piece, Pawn):
+                if piece.color == 'W':
+                    if y1 == 6 and y2 == 4:
+                        board[5][x1] = EnPassantGhost("W")
+                if piece.color == 'B':
+                    if y1 == 1 and y2 == 3:
+                        board[2][x1] = EnPassantGhost("B")
+                
+                if isinstance(target, EnPassantGhost):
+                    if target.color == 'W':
+                        board[y2 - 1][x2] = None
+                    if target.color == 'B':
+                        board[y2 + 1][x2] = None
+
             board[y2][x2] = piece
             board[y1][x1] = None
             if is_check(board, "W", find_king(board, 'W')) and current_color == 'B' and is_checkmate(board, 'W'):
@@ -213,7 +234,7 @@ def is_check(board, king_color, king_pos):
     for y in range(8):
         for x in range(8):
             piece = board[y][x]
-            if piece and piece.color != king_color:
+            if piece and piece.color != king_color and isinstance(piece, ChessPiece):
                 if piece.is_valid_move((x, y), king_pos, board):
                     return True
 
