@@ -2,11 +2,9 @@ from .pieces import Pawn, Rook, Knight, Bishop, Queen, King
 import copy
 
 
-# Spielbrett initialisieren
 def create_board():
     board = [[None for _ in range(8)] for _ in range(8)]
 
-    # Figuren platzieren
     for i in range(8):
         board[1][i] = Pawn('B')
         board[6][i] = Pawn('W')
@@ -38,6 +36,57 @@ def set_global_variables():
     b_has_left_rook_moved = False
     b_has_right_rook_moved = False
 
+def is_rochade_possible(board, side, current_color):
+    if side == "right":
+        if current_color == "W":
+            copy_board = copy.deepcopy(board)
+            if not is_check(copy_board, "W", find_king(copy_board, "W")):
+                copy_board[7][5] = King('W')
+                copy_board[7][4] = None
+                if not is_check(copy_board, "W", find_king(copy_board, "W")):
+                    copy_board[7][6] = King('W')
+                    copy_board[7][5] = None
+                    if not is_check(copy_board, "W", find_king(copy_board, "W")):
+                        return True
+            return False
+        if current_color == "B":
+            copy_board = copy.deepcopy(board)
+            if not is_check(copy_board, "B", find_king(copy_board, "B")):
+                copy_board[0][5] = King("B")
+                copy_board[0][4] = None
+                if not is_check(copy_board, "B", find_king(copy_board, "B")):
+                    copy_board[0][6] = King("B")
+                    copy_board[0][5] = None
+                    if not is_check(copy_board, "B", find_king(copy_board, "B")):
+                        return True
+            return False
+        
+    if side == "left":
+        if current_color == "W":
+            copy_board = copy.deepcopy(board)
+            if not is_check(copy_board, "W", find_king(copy_board, "W")):
+                copy_board[7][3] = King('W')
+                copy_board[7][4] = None
+                if not is_check(copy_board, "W", find_king(copy_board, "W")):
+                    copy_board[7][2] = King('W')
+                    copy_board[7][3] = None
+                    if not is_check(copy_board, "W", find_king(copy_board, "W")):
+                        return True
+            return False
+        if current_color == "B":
+            copy_board = copy.deepcopy(board)
+            if not is_check(copy_board, "B", find_king(copy_board, "B")):
+                copy_board[0][3] = King("B")
+                copy_board[0][4] = None
+                if not is_check(copy_board, "B", find_king(copy_board, "B")):
+                    copy_board[0][2] = King("B")
+                    copy_board[0][3] = None
+                    if not is_check(copy_board, "B", find_king(copy_board, "B")):
+                        return True
+            return False
+
+
+
 def move_piece(board, start, end, current_color, gui):
     global w_has_king_moved, w_has_left_rook_moved, w_has_right_rook_moved
     global b_has_king_moved, b_has_left_rook_moved, b_has_right_rook_moved
@@ -48,63 +97,51 @@ def move_piece(board, start, end, current_color, gui):
     if current_color == 'W' and isinstance(piece, King):
         if not w_has_king_moved and y1 == 7 and x1 == 4:
             if x2 == 6 and not w_has_right_rook_moved:
-                if board[7][5] is None and board[7][6] is None:
-                    board[7][6] = King('W')
-                    board[7][4] = None
-                    board[7][5] = Rook('W')
-                    board[7][7] = None
-                    w_has_king_moved = True
-                    w_has_right_rook_moved = True
-                    return True
+                if is_rochade_possible(board, "right", current_color):
+                    if board[7][5] is None and board[7][6] is None:
+                        board[7][6] = King('W')
+                        board[7][4] = None
+                        board[7][5] = Rook('W')
+                        board[7][7] = None
+                        w_has_king_moved = True
+                        w_has_right_rook_moved = True
+                        return True
                 
             if x2 == 2 and not w_has_left_rook_moved:
-                if board[7][3] is None and board[7][2] is None and board[7][1] is None:
-                    board[7][2] = King('W')
-                    board[7][4] = None
-                    board[7][3] = Rook('W')
-                    board[7][0] = None
-                    w_has_king_moved = True
-                    w_has_left_rook_moved = True
-                    return True
+                if is_rochade_possible(board, "left", current_color):
+                    if board[7][3] is None and board[7][2] is None and board[7][1] is None:
+                        board[7][2] = King('W')
+                        board[7][4] = None
+                        board[7][3] = Rook('W')
+                        board[7][0] = None
+                        w_has_king_moved = True
+                        w_has_left_rook_moved = True
+                        return True
                 
     if current_color == 'B' and isinstance(piece, King):
         if not b_has_king_moved and y1 == 0 and x1 == 4:
             if x2 == 6 and not b_has_right_rook_moved:
-                if board[0][5] is None and board[0][6] is None:
-                    board[0][6] = King('B')
-                    board[0][4] = None
-                    board[0][5] = Rook('B')
-                    board[0][7] = None
-                    b_has_king_moved = True
-                    b_has_right_rook_moved = True
-                    return True
+                if is_rochade_possible(board, "right", current_color):
+                    if board[0][5] is None and board[0][6] is None:
+                        board[0][6] = King('B')
+                        board[0][4] = None
+                        board[0][5] = Rook('B')
+                        board[0][7] = None
+                        b_has_king_moved = True
+                        b_has_right_rook_moved = True
+                        return True
                 
             if x2 == 2 and not b_has_left_rook_moved:
-                if board[0][3] is None and board[0][2] is None and board[0][1] is None:
-                    board[0][2] = King('B')
-                    board[0][4] = None
-                    board[0][3] = Rook('B')
-                    board[0][0] = None
-                    b_has_king_moved = True
-                    b_has_left_rook_moved = True
-                    return True
+                if is_rochade_possible(board, "left", current_color):
+                    if board[0][3] is None and board[0][2] is None and board[0][1] is None:
+                        board[0][2] = King('B')
+                        board[0][4] = None
+                        board[0][3] = Rook('B')
+                        board[0][0] = None
+                        b_has_king_moved = True
+                        b_has_left_rook_moved = True
+                        return True
                 
-    if isinstance(board[y1][x1], King):
-        if current_color == 'W':
-            w_has_king_moved = True
-        else:
-            b_has_king_moved = True
-    if isinstance(board[y1][x1], Rook):
-        if current_color == 'W':
-            if x1 == 0:
-                w_has_left_rook_moved = True
-            elif x1 == 7:
-                w_has_right_rook_moved = True
-        else:
-            if x1 == 0:
-                b_has_left_rook_moved = True
-            elif x1 == 7:
-                b_has_right_rook_moved = True
     
     if piece and piece.color == current_color and piece.is_valid_move((x1, y1), (x2, y2), board):
         target = board[y2][x2]
@@ -138,6 +175,23 @@ def move_piece(board, start, end, current_color, gui):
                         board[y2][x2] = Knight(piece.color)
                         board[y1][x1] = None
                         return True           
+            if isinstance(board[y1][x1], King):
+                if current_color == 'W':
+                    w_has_king_moved = True
+                else:
+                    b_has_king_moved = True
+            if isinstance(board[y1][x1], Rook):
+                if current_color == 'W':
+                    if x1 == 0:
+                        w_has_left_rook_moved = True
+                    elif x1 == 7:
+                        w_has_right_rook_moved = True
+                else:
+                    if x1 == 0:
+                        b_has_left_rook_moved = True
+                    elif x1 == 7:
+                        b_has_right_rook_moved = True
+            
             board[y2][x2] = piece
             board[y1][x1] = None
             if is_check(board, "W", find_king(board, 'W')) and current_color == 'B' and is_checkmate(board, 'W'):
