@@ -1,2 +1,2 @@
 # PyChess
-Own made Chess build with Python
+Selber programmiertes Schachspiel, basierend auf Python
