@@ -67,6 +67,28 @@ def move_piece(board, start, end, current_color, gui):
                     w_has_left_rook_moved = True
                     return True
                 
+    if current_color == 'B' and isinstance(piece, King):
+        if not b_has_king_moved and y1 == 0 and x1 == 4:
+            if x2 == 6 and not b_has_right_rook_moved:
+                if board[0][5] is None and board[0][6] is None:
+                    board[0][6] = King('B')
+                    board[0][4] = None
+                    board[0][5] = Rook('B')
+                    board[0][7] = None
+                    b_has_king_moved = True
+                    b_has_right_rook_moved = True
+                    return True
+                
+            if x2 == 2 and not b_has_left_rook_moved:
+                if board[0][3] is None and board[0][2] is None and board[0][1] is None:
+                    board[0][2] = King('B')
+                    board[0][4] = None
+                    board[0][3] = Rook('B')
+                    board[0][0] = None
+                    b_has_king_moved = True
+                    b_has_left_rook_moved = True
+                    return True
+                
     if isinstance(board[y1][x1], King):
         if current_color == 'W':
             w_has_king_moved = True
