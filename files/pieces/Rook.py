@@ -1,4 +1,5 @@
 from .ChessPiece import ChessPiece
+from .EnPassantGhost import EnPassantGhost
 
 class Rook(ChessPiece):
     symbol = 'rook'
@@ -12,7 +13,7 @@ class Rook(ChessPiece):
         dy = 0 if y1 == y2 else (1 if y2 > y1 else -1)
         x, y = x1 + dx, y1 + dy
         while (x, y) != (x2, y2):
-            if board[y][x] is not None:
+            if board[y][x] is not None and not isinstance(board[y][x], EnPassantGhost):
                 return False
             x += dx
             y += dy

@@ -217,8 +217,10 @@ def move_piece(board, start, end, current_color, gui):
             board[y1][x1] = None
             if is_check(board, "W", find_king(board, 'W')) and current_color == 'B' and is_checkmate(board, 'W'):
                 print("Schwarz hat gewonnen!")
+                gui.win("Schwarz")
             if is_check(board, "B", find_king(board, 'B')) and current_color == 'W' and is_checkmate(board, 'B'):
                 print("Weiss hat gewonnen!")
+                gui.win("Weiss")
             return True
     return False
 
@@ -242,7 +244,7 @@ def is_checkmate(board, king_color):
     for y in range(8):
         for x in range(8):
             piece = board[y][x]
-            if piece and piece.color == king_color:
+            if piece and piece.color == king_color and isinstance(piece, ChessPiece):
                 for temp_y in range(8):
                     for temp_x in range(8):
                         if piece.is_valid_move((x, y), (temp_x, temp_y), board):
