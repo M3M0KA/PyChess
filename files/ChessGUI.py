@@ -90,6 +90,14 @@ class ChessGUI:
                 self.temp1 = None
                 self.temp2 = None
 
+    def win(self, winner):
+        font = pygame.font.Font(None, 50)
+        text = font.render(f"{winner} gewinnt!", True, (0, 0, 0))
+        self.screen.blit(text, (350, 700))
+        pygame.display.flip()
+        global someone_won
+        someone_won = True
+
     def promotion_options(self, screen):
         font = pygame.font.Font(None, 30)
         self.size_temp = 147.5
@@ -137,11 +145,15 @@ class ChessGUI:
         self.update(self.board)
         running = True
         is_first_move = True
+        global someone_won
+        someone_won = False
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if someone_won:
+                        break
                     self.handle_click(event.pos)
                     if is_first_move:
                         set_global_variables()
