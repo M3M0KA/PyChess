@@ -1,6 +1,6 @@
 import pygame
 import os
-from .logic import move_piece, create_board
+from .logic import move_piece, create_board, set_global_variables
 
 
 IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'images')
@@ -135,10 +135,14 @@ class ChessGUI:
         self.board = create_board()
         self.update(self.board)
         running = True
+        is_first_move = True
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_click(event.pos)
+                    if is_first_move:
+                        set_global_variables()
+                    is_first_move = False
                 

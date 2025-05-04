@@ -28,10 +28,62 @@ def parse_input(move):
     except:
         return None, None
 
+def set_global_variables():
+    global w_has_king_moved, w_has_left_rook_moved, w_has_right_rook_moved
+    global b_has_king_moved, b_has_left_rook_moved, b_has_right_rook_moved
+    w_has_king_moved = False
+    w_has_left_rook_moved = False
+    w_has_right_rook_moved = False
+    b_has_king_moved = False
+    b_has_left_rook_moved = False
+    b_has_right_rook_moved = False
+
 def move_piece(board, start, end, current_color, gui):
+    global w_has_king_moved, w_has_left_rook_moved, w_has_right_rook_moved
+    global b_has_king_moved, b_has_left_rook_moved, b_has_right_rook_moved
     x1, y1 = start
     x2, y2 = end
     piece = board[y1][x1]
+    
+    if current_color == 'W' and isinstance(piece, King):
+        if not w_has_king_moved and y1 == 7 and x1 == 4:
+            if x2 == 6 and not w_has_right_rook_moved:
+                if board[7][5] is None and board[7][6] is None:
+                    board[7][6] = King('W')
+                    board[7][4] = None
+                    board[7][5] = Rook('W')
+                    board[7][7] = None
+                    w_has_king_moved = True
+                    w_has_right_rook_moved = True
+                    return True
+                
+            if x2 == 2 and not w_has_left_rook_moved:
+                if board[7][3] is None and board[7][2] is None and board[7][1] is None:
+                    board[7][2] = King('W')
+                    board[7][4] = None
+                    board[7][3] = Rook('W')
+                    board[7][0] = None
+                    w_has_king_moved = True
+                    w_has_left_rook_moved = True
+                    return True
+                
+    if isinstance(board[y1][x1], King):
+        if current_color == 'W':
+            w_has_king_moved = True
+        else:
+            b_has_king_moved = True
+    if isinstance(board[y1][x1], Rook):
+        if current_color == 'W':
+            if x1 == 0:
+                w_has_left_rook_moved = True
+            elif x1 == 7:
+                w_has_right_rook_moved = True
+        else:
+            if x1 == 0:
+                b_has_left_rook_moved = True
+            elif x1 == 7:
+                b_has_right_rook_moved = True
+    
     if piece and piece.color == current_color and piece.is_valid_move((x1, y1), (x2, y2), board):
         target = board[y2][x2]
         if target is None or target.color != current_color:
@@ -40,13 +92,9 @@ def move_piece(board, start, end, current_color, gui):
             temp_board[y2][x2] = piece
             if is_check(temp_board, "W", find_king(temp_board, 'W')) and current_color == 'W':
                 print("Weisser König im Schach!")
-                if is_checkmate(temp_board, 'W'):
-                    print("Schachmatt! Weisser König ist geschlagen.")
                 return False
             if is_check(temp_board, "B", find_king(temp_board, 'B')) and current_color == 'B':
                 print("Schwarzer König im Schach!")
-                if is_checkmate(temp_board, 'B'):
-                    print("Schachmatt! Schwarzer König ist geschlagen.")
                 return False
             if isinstance(piece, Pawn):
                 if piece.turn_to_differentpiece(y2):
@@ -70,6 +118,10 @@ def move_piece(board, start, end, current_color, gui):
                         return True           
             board[y2][x2] = piece
             board[y1][x1] = None
+            if is_check(board, "W", find_king(board, 'W')) and current_color == 'B' and is_checkmate(board, 'W'):
+                print("Schwarz hat gewonnen!")
+            if is_check(board, "B", find_king(board, 'B')) and current_color == 'W' and is_checkmate(board, 'B'):
+                print("Weiss hat gewonnen!")
             return True
     return False
 
@@ -100,7 +152,7 @@ def is_checkmate(board, king_color):
                             temp_board = copy.deepcopy(board)
                             temp_board[temp_y][temp_x] = piece
                             temp_board[y][x] = None
-                            if not is_check(temp_board, king_color, find_king(temp_board, king_color)) and temp_board[temp_y][temp_x] == None:
+                            if not is_check(temp_board, king_color, find_king(temp_board, king_color)):
                                 print(temp_x, temp_y, piece.color, piece.symbol)
                                 return False
     return True
