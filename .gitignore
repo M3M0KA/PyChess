@@ -3,7 +3,7 @@ files/pieces/__pycache__/
 files/__pycache__/
 *.py[cod]
 *$py.class
-
+.vscode/
 build/
 
 # C extensions
