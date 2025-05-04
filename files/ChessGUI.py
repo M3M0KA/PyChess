@@ -1,7 +1,7 @@
 import pygame
 import os
 from .logic import move_piece, create_board, set_global_variables
-
+from .pieces import ChessPiece
 
 IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'images')
 piece_images = {}
@@ -49,11 +49,12 @@ class ChessGUI:
             for x in range(8):
                 piece = board[y][x]
                 if piece:
-                    image_temp = f"{piece.color.lower()}_{piece.symbol.lower()}"
-                    image = piece_images.get(image_temp)
-                    if image: 
-                        image = pygame.transform.scale(image, (50, 50))
-                        screen.blit(image, (x * 60 + 164, y * 60 + 164)) 
+                    if isinstance(piece, ChessPiece):
+                        image_temp = f"{piece.color.lower()}_{piece.symbol.lower()}"
+                        image = piece_images.get(image_temp)
+                        if image:
+                            image = pygame.transform.scale(image, (50, 50))
+                            screen.blit(image, (x * 60 + 164, y * 60 + 164))
                         
 
     def draw_board(self, screen):
@@ -69,7 +70,7 @@ class ChessGUI:
         y = (y - 160) // 60
         if 0 <= x < 8 and 0 <= y < 8:
             if self.temp1 is None:
-                if self.board[y][x] is None or self.board[y][x].color != self.current_color:
+                if self.board[y][x] is None or self.board[y][x].color != self.current_color or isinstance(self.board[y][x], ChessPiece) == False:
                     return
                 else:
                     self.temp1 = (x, y)
