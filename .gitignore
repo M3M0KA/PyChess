@@ -5,7 +5,7 @@ files/__pycache__/
 *$py.class
 .vscode/
 build/
-
+dist/
 # C extensions
 *.so
 
