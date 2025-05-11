@@ -92,7 +92,10 @@ class ChessGUI:
 
     def win(self, winner):
         font = pygame.font.Font(None, 50)
-        text = font.render(f"{winner} gewinnt!", True, (0, 0, 0))
+        if winner == "stalemate":
+            text = font.render("Unentschieden!", True, (0, 0, 0))
+        else:
+            text = font.render(f"{winner} gewinnt!", True, (0, 0, 0))
         self.screen.blit(text, (350, 700))
         pygame.display.flip()
         global someone_won
