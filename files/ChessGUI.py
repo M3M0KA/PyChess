@@ -2,6 +2,7 @@ import pygame
 import os
 from .logic import move_piece, create_board, set_global_variables
 from .pieces import ChessPiece
+from .images import image_editor
 
 IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'temp_images')
 piece_images = {}
@@ -162,4 +163,5 @@ class ChessGUI:
                     if is_first_move:
                         set_global_variables()
                     is_first_move = False
-                
+        rmv = image_editor(0)
+        rmv.rmv()

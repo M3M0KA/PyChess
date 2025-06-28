@@ -8,12 +8,11 @@ class image_editor:
         self.base_path = os.path.dirname(os.path.abspath(__file__))
         self.src_path = os.path.join(self.base_path, "images")
         self.dst_path = os.path.join(self.base_path, "temp_images")
+
     def create_copys(self):
         for file in os.listdir(self.dst_path):
-            print(f"Removing {file} from {self.dst_path}")
             os.remove(os.path.join(self.dst_path, file))
         for file in os.listdir(self.src_path):
-            print(f"Copying {file} to {self.dst_path}")
             copy (os.path.join(self.src_path, file), self.dst_path)
         
     def resize(self):
@@ -22,6 +21,10 @@ class image_editor:
             wanted_size = int(self.windowsize * 0.075)
             img = img.resize((wanted_size, wanted_size), Image.Resampling.LANCZOS)
             img.save(os.path.join(self.dst_path, file))
+
+    def rmv(self):
+        for file in os.listdir(self.dst_path):
+            os.remove(os.path.join(self.dst_path, file))
 
 if __name__ == "__main__":
     editor = image_editor(800)
