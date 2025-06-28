@@ -22,8 +22,8 @@ class ChessGUI:
         self.clock = pygame.time.Clock()
         self.clock.tick(60)
         pygame.display.set_caption("Schach")
-        font = pygame.font.Font(None, 36)
-        self.screen.blit(font.render("Schach", True, (0, 0, 0)), (350, 10))
+        font = pygame.font.Font(None, int(0.045 * self.windowsize))
+        self.screen.blit(font.render("Schach", True, (0, 0, 0)), ((0.4375 * self.windowsize), (0.0125 * self.windowsize)))
         self.draw_board(self.screen)
         pygame.display.flip()
     
