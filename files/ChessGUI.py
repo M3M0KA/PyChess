@@ -163,5 +163,4 @@ class ChessGUI:
                     if is_first_move:
                         set_global_variables()
                     is_first_move = False
-        rmv = image_editor(0)
-        rmv.rmv()
+        image_editor(0).rmv()
