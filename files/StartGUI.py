@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import threading
 import os
+import webbrowser
 if __name__ != "__main__":
     from .ChessGUI import ChessGUI
     from .images import image_editor
@@ -34,17 +35,20 @@ class StartGUI:
 
         self.menu = Menu(self.root)
         self.root.config(menu=self.menu)
-        self.help_menu = Menu(self.menu)
-        self.menu.add_cascade(label="More", menu=self.help_menu)
 
-        self.label = Label(self.frm, text="Hello World!")
+        self.help_menu = Menu(self.menu, tearoff=0)
+        self.help_menu.add_command(label="GitHub",command=lambda: webbrowser.open('https://github.com/M3M0KA/PyChess', autoraise=True))
+
+        self.menu.add_cascade(label="Hilfe", menu=self.help_menu)
+
+        self.label = Label(self.frm, text="Schach Menu")
         self.label.grid(column=0, row=0, columnspan=5, sticky="nsew")
 
         self.entry = Entry(self.frm)
         self.entry.grid(column=1, row=4, sticky="nsew")
 
         self.quitbutton = Button(self.frm, text="Start Game!", command=self.thread_startgame)
-        self.quitbutton.grid(column=2, row=1, sticky="nsew")
+        self.quitbutton.grid(column=3, row=6, sticky="nsew")
 
         self.option1 = Radiobutton(self.frm, value=0, variable=self.selected_option, text="600px (empfohlen)")
         self.option1.grid(column=0, row=1, sticky="nsew")
@@ -59,20 +63,16 @@ class StartGUI:
         self.option4.grid(column=0, row=4, sticky="nsew")
 
         self.root.mainloop()
-    
+
     def thread_startgame(self):
         value = self.selected_option.get()
         if value == 0:
-            print(0)
             threading.Thread(target=self.run_game(600)).start()
         elif value == 1:
-            print(1)
             threading.Thread(target=self.run_game(800)).start()
         elif value == 2:
-            print(2)
             threading.Thread(target=self.run_game(400)).start()
         else:
-            print(3)
             try:
                 size = int(self.entry.get())
             except TypeError:

@@ -3,7 +3,8 @@ from files.images import image_editor
 from files.StartGUI import StartGUI
 
 if __name__ == "__main__":
-    """while True:
+    """
+    while True:
         try:
             windowsize = input("\nBitte Fenstergrösse angeben(in px): ")
             windowsize1 = int(windowsize)
@@ -15,8 +16,8 @@ if __name__ == "__main__":
             if windowsize == "":
                 windowsize1 = 600
                 break
-            print("\nBitte Zahl angeben! (zwischen 50 und 2000)")"""
-   
+            print("\nBitte Zahl angeben! (zwischen 50 und 2000)")
+    """
 
     gui = StartGUI()
 
