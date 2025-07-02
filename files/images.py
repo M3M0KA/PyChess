@@ -10,8 +10,6 @@ class image_editor:
         self.dst_path = os.path.join(self.base_path, "temp_images")
 
     def create_copys(self):
-        for file in os.listdir(self.dst_path):
-            os.remove(os.path.join(self.dst_path, file))
         for file in os.listdir(self.src_path):
             copy (os.path.join(self.src_path, file), self.dst_path)
         

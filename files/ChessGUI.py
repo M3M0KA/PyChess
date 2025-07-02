@@ -1,10 +1,11 @@
-import pygame
 import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import pygame
 from .logic import move_piece, create_board, set_global_variables
 from .pieces import ChessPiece
 from .images import image_editor
 
-IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'temp_images')
+IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'images')
 piece_images = {}
 pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king']
 colors = ['w', 'b']
@@ -18,6 +19,8 @@ class ChessGUI:
         self.GREEN = (118, 150, 86)
         self.WHITE = (255, 255, 255)
         pygame.init()
+        self.icon = pygame.image.load(os.path.join(os.path.dirname(__file__), "icon.png"))
+        pygame.display.set_icon(self.icon)
         self.screen = pygame.display.set_mode((windowsize, windowsize))
         self.screen.fill((234,255,123))
         self.clock = pygame.time.Clock()
@@ -162,5 +165,9 @@ class ChessGUI:
                     self.handle_click(event.pos)
                     if is_first_move:
                         set_global_variables()
-                    is_first_move = False
-        image_editor(0).rmv()
+                        is_first_move = False
+        image_editor(None).rmv()
+        pygame.quit()
+
+    def clear(self):
+        pass
