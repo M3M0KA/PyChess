@@ -62,33 +62,78 @@ class StartGUI:
         self.option4 = Radiobutton(self.frm, variable=self.selected_option, value=3, text="eigene (in px)")
         self.option4.grid(column=0, row=4, sticky="nsew")
 
+        self.combobox = ttk.Combobox(self.frm)
+        self.combobox["values"] = ("Klassisch",
+                                   "Klassisch 2",
+                                   "Grau",
+                                   "Grau 2",
+                                   "Grau 3",
+                                   "Grau 4",
+                                   "Grün",
+                                   "Gold",
+                                   "Pink",
+                                   "Blau",
+                                   "Violett",
+                                   "Rot",
+                                   "Vanilla")
+        self.combobox.grid(column=3, row=2)
+
         self.root.mainloop()
 
     def thread_startgame(self):
+        ori_color = self.combobox.get()
+        print(ori_color)
+        if ori_color == "" or ori_color == "Klassisch":
+            color = "classic1"
+        elif ori_color == "Klassisch 2":
+            color = "classic2"
+        elif ori_color == "Grau":
+            color = "gray1"
+        elif ori_color == "Grau 2":
+            color = "gray2"
+        elif ori_color == "Grau 3":
+            color = "gray3"
+        elif ori_color == "Grau 4":
+            color = "gray4"
+        elif ori_color == "Grün":
+            color = "green1"
+        elif ori_color == "Gold":
+            color = "gold1"
+        elif ori_color == "Pink":
+            color = "pink1"
+        elif ori_color == "Blau":
+            color = "blue1"
+        elif ori_color == "Violett":
+            color = "violet1"
+        elif ori_color == "Rot":
+            color = "red1"
+        elif ori_color == "Vanilla":
+            color = "vanilla1"
+
         value = self.selected_option.get()
         if value == 0:
-            threading.Thread(target=self.run_game(600)).start()
+            threading.Thread(target=self.run_game(600, color)).start()
         elif value == 1:
-            threading.Thread(target=self.run_game(800)).start()
+            threading.Thread(target=self.run_game(800, color)).start()
         elif value == 2:
-            threading.Thread(target=self.run_game(400)).start()
+            threading.Thread(target=self.run_game(400, color)).start()
         else:
             try:
-                size = int(self.entry.get())
-            except TypeError:
+                size = int(round(float(self.entry.get()), 1))
+            except ValueError:
                 print("Only Numbers")
                 return
-            if size <= 50:
+            if size < 50:
                 return
-            if size >= 2000:
+            if size > 2000:
                 return
-            threading.Thread(target=self.run_game(size)).start()
+            threading.Thread(target=self.run_game(size, color)).start()
 
-    def run_game(self, windowsize):
+    def run_game(self, windowsize, boardcolor):
         self.editor = image_editor(windowsize)
         self.editor.create_copys()
         self.editor.resize()
-        self.chess_gui = ChessGUI(windowsize)
+        self.chess_gui = ChessGUI(windowsize, boardcolor)
         self.chess_gui.run()
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
-from files.ChessGUI import ChessGUI
-from files.images import image_editor
+#from files.ChessGUI import ChessGUI
+#from files.images import image_editor
 from files.StartGUI import StartGUI
 
 if __name__ == "__main__":

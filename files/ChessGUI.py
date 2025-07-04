@@ -11,18 +11,73 @@ pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king']
 colors = ['w', 'b']
 
 class ChessGUI:
-    def __init__(self, windowsize):
+    def __init__(self, windowsize, boardcolor):
         self.windowsize = windowsize
         self.current_color = 'W'
         self.temp1 = None
         self.load_images()
-        self.GREEN = (118, 150, 86)
+
+        self.DARK = None
+        self.WHITE = None
         self.WHITE = (255, 255, 255)
+        
+        if boardcolor == "classic1":
+            self.DARK = (129, 169, 97)
+            self.BRIGHT = (255, 250, 223)
+        
+        if boardcolor == "gray1":
+            self.DARK = (191, 193, 139)
+            self.BRIGHT = (236, 234, 240)
+
+        if boardcolor == "classic2":
+            self.DARK = (179, 136, 101)
+            self.BRIGHT = (234, 219, 183)
+        
+        if boardcolor == "gold1":
+            self.DARK = (189, 134, 21)
+            self.BRIGHT = (204, 207, 189)
+        
+        if boardcolor == "pink1":
+            self.DARK = (236, 119, 117)
+            self.BRIGHT = (233, 241, 191)
+        
+        if boardcolor == "gray2":
+            self.DARK = (132, 123, 197)
+            self.BRIGHT = (171, 162, 145)
+        
+        if boardcolor == "blue1":
+            self.DARK = (76, 119, 171)
+            self.BRIGHT = (197, 203, 215)
+        
+        if boardcolor == "violet1":
+            self.DARK = (149, 123, 179)
+            self.BRIGHT = (229, 213, 241)
+
+        if boardcolor == "green1":
+            self.DARK = (88, 148, 96)
+            self.BRIGHT = (239, 246, 182)
+        
+        if boardcolor == "gray3":
+            self.DARK = (140, 162, 172)
+            self.BRIGHT = (223, 227, 228)
+        
+        if boardcolor == "red1":
+            self.DARK = (166, 208, 221)
+            self.BRIGHT = (252, 59, 64)
+        
+        if boardcolor == "vanilla1":
+            self.DARK = (237, 214, 180)
+            self.BRIGHT = (255, 241, 206)
+        
+        if boardcolor == "gray4":
+            self.DARK = (95, 94, 93)
+            self.BRIGHT = (139, 156, 154)
+
         pygame.init()
         self.icon = pygame.image.load(os.path.join(os.path.dirname(__file__), "icon.png"))
         pygame.display.set_icon(self.icon)
         self.screen = pygame.display.set_mode((windowsize, windowsize))
-        self.screen.fill((234,255,123))
+        self.screen.fill((self.WHITE))
         self.clock = pygame.time.Clock()
         self.clock.tick(60)
         pygame.display.set_caption("Schach")
@@ -66,7 +121,7 @@ class ChessGUI:
         square_size = (self.windowsize / 13.33333)  # Grösse Schachfeld
         for y in range(8):
             for x in range(8):
-                color = self.WHITE if (x + y) % 2 == 0 else self.GREEN
+                color = self.BRIGHT if (x + y) % 2 == 0 else self.DARK
                 pygame.draw.rect(screen, color, pygame.Rect(x * square_size + (self.windowsize / 5), y * square_size + (self.windowsize / 5), square_size, square_size))
 
     def handle_click(self, pos):
