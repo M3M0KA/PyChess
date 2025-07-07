@@ -1,13 +1,17 @@
 import os
-from shutil import copy, rmtree
+from shutil import copy
 from PIL import Image
+import tempfile
+
 
 class image_editor:
     def __init__(self, windowsize):
+        self.temp_images = tempfile.TemporaryDirectory(delete=True)
+        print(self.temp_images.name)
         self.windowsize = windowsize
         self.base_path = os.path.dirname(os.path.abspath(__file__))
         self.src_path = os.path.join(self.base_path, "images")
-        self.dst_path = os.path.join(self.base_path, "temp_images")
+        self.dst_path = self.temp_images.name
 
     def create_copys(self):
         for file in os.listdir(self.src_path):
@@ -23,6 +27,11 @@ class image_editor:
     def rmv(self):
         for file in os.listdir(self.dst_path):
             os.remove(os.path.join(self.dst_path, file))
+        
+
+    @property
+    def path(self):
+        return self.temp_images.name
 
 if __name__ == "__main__":
     editor = image_editor(800)

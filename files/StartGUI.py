@@ -3,6 +3,7 @@ from tkinter import ttk
 import threading
 import os
 import webbrowser
+import tempfile
 if __name__ != "__main__":
     from .ChessGUI import ChessGUI
     from .images import image_editor
@@ -133,7 +134,7 @@ class StartGUI:
         self.editor = image_editor(windowsize)
         self.editor.create_copys()
         self.editor.resize()
-        self.chess_gui = ChessGUI(windowsize, boardcolor)
+        self.chess_gui = ChessGUI(windowsize, boardcolor, self.editor.path)
         self.chess_gui.run()
 
 if __name__ == "__main__":

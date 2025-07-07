@@ -5,13 +5,13 @@ from .logic import move_piece, create_board, set_global_variables
 from .pieces import ChessPiece
 from .images import image_editor
 
-IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'images')
 piece_images = {}
 pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king']
 colors = ['w', 'b']
 
 class ChessGUI:
-    def __init__(self, windowsize, boardcolor):
+    def __init__(self, windowsize, boardcolor, path):
+        self.path = path
         self.windowsize = windowsize
         self.current_color = 'W'
         self.temp1 = None
@@ -90,7 +90,7 @@ class ChessGUI:
         for piece in pieces:
             for color in colors:
                 key = f"{color}_{piece}"
-                image_path = os.path.join(IMAGES_PATH, f"{key}.png")
+                image_path = os.path.join(self.path, f"{key}.png")
 
                 if os.path.exists(image_path):
                     piece_images[key] = pygame.image.load(image_path)
