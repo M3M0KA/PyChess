@@ -3,7 +3,7 @@ from tkinter import ttk
 import threading
 import os
 import webbrowser
-import tempfile
+from ttkthemes import ThemedStyle
 if __name__ != "__main__":
     from .ChessGUI import ChessGUI
     from .images import image_editor
@@ -25,6 +25,7 @@ class StartGUI:
         self.root.iconphoto(True, self.icon)
 
         self.selected_option = IntVar()
+        self.darkmodestate = IntVar()
 
         self.frm = ttk.Frame(self.root)
         self.frm.grid(row=0, column=0, sticky="nsew")
@@ -42,26 +43,29 @@ class StartGUI:
 
         self.menu.add_cascade(label="Hilfe", menu=self.help_menu)
 
-        self.label = Label(self.frm, text="Schach Menu")
+        self.label = ttk.Label(self.frm, text="Schach Menu", anchor="center")
         self.label.grid(column=0, row=0, columnspan=5, sticky="nsew")
 
-        self.entry = Entry(self.frm)
+        self.entry = ttk.Entry(self.frm)
         self.entry.grid(column=1, row=4, sticky="nsew")
 
-        self.quitbutton = Button(self.frm, text="Start Game!", command=self.thread_startgame)
+        self.quitbutton = ttk.Button(self.frm, text="Start Game!", command=self.thread_startgame)
         self.quitbutton.grid(column=3, row=6, sticky="nsew")
 
-        self.option1 = Radiobutton(self.frm, value=0, variable=self.selected_option, text="600px (empfohlen)")
+        self.option1 = ttk.Radiobutton(self.frm, value=0, variable=self.selected_option, text="600px (empfohlen)")
         self.option1.grid(column=0, row=1, sticky="nsew")
 
-        self.option2 = Radiobutton(self.frm, variable=self.selected_option, value=1, text="800px")
+        self.option2 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=1, text="800px")
         self.option2.grid(column=0, row=2, sticky="nsew")
 
-        self.option3 = Radiobutton(self.frm, variable=self.selected_option, value=2, text="400px")
+        self.option3 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=2, text="400px")
         self.option3.grid(column=0, row=3, sticky="nsew")
 
-        self.option4 = Radiobutton(self.frm, variable=self.selected_option, value=3, text="eigene (in px)")
+        self.option4 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=3, text="eigene (in px)")
         self.option4.grid(column=0, row=4, sticky="nsew")
+
+        self.darkmode = ttk.Checkbutton(self.frm, text="Dunkel", variable=self.darkmodestate, command=self.turn_to_the_dark)
+        self.darkmode.grid(column=0, row=6)
 
         self.combobox = ttk.Combobox(self.frm)
         self.combobox["values"] = ("Klassisch",
@@ -78,6 +82,8 @@ class StartGUI:
                                    "Rot",
                                    "Vanilla")
         self.combobox.grid(column=3, row=2)
+
+        self.turn_to_the_dark()
 
         self.root.mainloop()
 
@@ -113,11 +119,11 @@ class StartGUI:
 
         value = self.selected_option.get()
         if value == 0:
-            threading.Thread(target=self.run_game(600, color)).start()
+            threading.Thread(target=self.run_game(600, color, self.darkmodestate.get())).start()
         elif value == 1:
-            threading.Thread(target=self.run_game(800, color)).start()
+            threading.Thread(target=self.run_game(800, color, self.darkmodestate.get())).start()
         elif value == 2:
-            threading.Thread(target=self.run_game(400, color)).start()
+            threading.Thread(target=self.run_game(400, color, self.darkmodestate.get())).start()
         else:
             try:
                 size = int(round(float(self.entry.get()), 1))
@@ -128,14 +134,35 @@ class StartGUI:
                 return
             if size > 2000:
                 return
-            threading.Thread(target=self.run_game(size, color)).start()
+            threading.Thread(target=self.run_game(size, color, self.darkmodestate.get())).start()
 
-    def run_game(self, windowsize, boardcolor):
+    def run_game(self, windowsize, boardcolor, darkmode):
         self.editor = image_editor(windowsize)
         self.editor.create_copys()
         self.editor.resize()
-        self.chess_gui = ChessGUI(windowsize, boardcolor, self.editor.path)
+        self.chess_gui = ChessGUI(windowsize, boardcolor, self.editor.path, darkmode=darkmode)
         self.chess_gui.run()
 
+    def turn_to_the_dark(self):
+        if self.darkmodestate.get() == 1:
+            children_list = self.all_children()
+            for i in children_list:
+                style = ThemedStyle(i)
+            style.set_theme("equilux")
+        else:
+            children_list = self.all_children()
+            for i in children_list:
+                style = ThemedStyle(i)
+            style.set_theme("arc")
+
+    def all_children (self) :
+        _list = self.root.winfo_children()
+
+        for item in _list :
+            if item.winfo_children() :
+                _list.extend(item.winfo_children())
+        
+        return _list
+    
 if __name__ == "__main__":
     gui = StartGUI()

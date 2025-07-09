@@ -10,16 +10,19 @@ pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king']
 colors = ['w', 'b']
 
 class ChessGUI:
-    def __init__(self, windowsize, boardcolor, path):
+    def __init__(self, windowsize, boardcolor, path, darkmode):
+        self.darkmode = darkmode
         self.path = path
         self.windowsize = windowsize
         self.current_color = 'W'
         self.temp1 = None
         self.load_images()
 
-        self.DARK = None
-        self.WHITE = None
-        self.WHITE = (255, 255, 255)
+        print(self.darkmode)
+        if self.darkmode == 1:
+            self.WHITE = (0, 0, 0)
+        else:
+            self.WHITE = (255, 255, 255)
         
         if boardcolor == "classic1":
             self.DARK = (129, 169, 97)
@@ -82,7 +85,10 @@ class ChessGUI:
         self.clock.tick(60)
         pygame.display.set_caption("Schach")
         font = pygame.font.Font(None, int(0.045 * self.windowsize))
-        self.screen.blit(font.render("Schach", True, (0, 0, 0)), ((0.4375 * self.windowsize), (0.0125 * self.windowsize)))
+        if self.darkmode:
+            self.screen.blit(font.render("Schach", True, (255, 255, 255)), ((0.4375 * self.windowsize), (0.0125 * self.windowsize)))
+        else:
+            self.screen.blit(font.render("Schach", True, (0, 0, 0)), ((0.4375 * self.windowsize), (0.0125 * self.windowsize)))
         self.draw_board(self.screen)
         pygame.display.flip()
     
@@ -154,9 +160,15 @@ class ChessGUI:
     def win(self, winner):
         font = pygame.font.Font(None, 50)
         if winner == "stalemate":
-            text = font.render("Unentschieden!", True, (0, 0, 0))
+            if self.darkmode:
+                text = font.render("Unentschieden!", True, (255, 255, 255))
+            else:
+                text = font.render("Unentschieden!", True, (0, 0, 0))
         else:
-            text = font.render(f"{winner} gewinnt!", True, (0, 0, 0))
+            if self.darkmode:
+                text = font.render(f"{winner} gewinnt!", True, (255, 255, 255))
+            else:
+                text = font.render(f"{winner} gewinnt!", True, (0, 0, 0))
         self.screen.blit(text, ((0.4375 * self.windowsize), (0.875 * self.windowsize)))
         pygame.display.flip()
         global someone_won
