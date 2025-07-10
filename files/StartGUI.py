@@ -46,26 +46,26 @@ class StartGUI:
         self.label = ttk.Label(self.frm, text="Schach Menu", anchor="center")
         self.label.grid(column=0, row=0, columnspan=5, sticky="nsew")
 
-        self.entry = ttk.Entry(self.frm)
-        self.entry.grid(column=1, row=4, sticky="nsew")
+        self.entry = ttk.Entry(self.frm, textvariable=1)
+        self.entry.grid(column=1, row=4, sticky="w")
 
         self.quitbutton = ttk.Button(self.frm, text="Start Game!", command=self.thread_startgame)
-        self.quitbutton.grid(column=3, row=6, sticky="nsew")
+        self.quitbutton.grid(column=1, row=6, sticky="nsew")
 
         self.option1 = ttk.Radiobutton(self.frm, value=0, variable=self.selected_option, text="600px (empfohlen)")
-        self.option1.grid(column=0, row=1, sticky="nsew")
+        self.option1.grid(column=0, row=1, sticky="nsew", padx=15)
 
         self.option2 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=1, text="800px")
-        self.option2.grid(column=0, row=2, sticky="nsew")
+        self.option2.grid(column=0, row=2, sticky="nsew", padx=15)
 
         self.option3 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=2, text="400px")
-        self.option3.grid(column=0, row=3, sticky="nsew")
+        self.option3.grid(column=0, row=3, sticky="nsew", padx=15)
 
         self.option4 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=3, text="eigene (in px)")
-        self.option4.grid(column=0, row=4, sticky="nsew")
+        self.option4.grid(column=0, row=4, sticky="nsew", padx=15)
 
         self.darkmode = ttk.Checkbutton(self.frm, text="Dunkel", variable=self.darkmodestate, command=self.turn_to_the_dark)
-        self.darkmode.grid(column=0, row=6)
+        self.darkmode.grid(column=3, row=6)
 
         self.combobox = ttk.Combobox(self.frm)
         self.combobox["values"] = ("Klassisch",

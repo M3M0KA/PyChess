@@ -124,7 +124,8 @@ class ChessGUI:
                         
 
     def draw_board(self, screen):
-        square_size = (self.windowsize / 13.33333)  # Grösse Schachfeld
+        board_size = self.windowsize * 0.6
+        square_size = board_size / 8
         for y in range(8):
             for x in range(8):
                 color = self.BRIGHT if (x + y) % 2 == 0 else self.DARK
@@ -134,7 +135,6 @@ class ChessGUI:
         x, y = pos
         x = int((x - (self.windowsize/5)) // (0.075 * self.windowsize))
         y = int((y - (self.windowsize/5)) // (0.075 * self.windowsize))
-        print(x, y)
         if 0 <= x < 8 and 0 <= y < 8:
             if self.temp1 is None:
                 if self.board[y][x] is None or self.board[y][x].color != self.current_color or isinstance(self.board[y][x], ChessPiece) == False:
@@ -175,7 +175,7 @@ class ChessGUI:
         someone_won = True
 
     def promotion_options(self, screen):
-        font = pygame.font.Font(None, 30)
+        font = pygame.font.Font(None, int(0.0375 * self.windowsize))
         choices = {
             'Dame': ((0.18125 * self.windowsize), (0.125 * self.windowsize)),
             'Turm': ((0.34375 * self.windowsize), (0.125 * self.windowsize)),
@@ -191,27 +191,30 @@ class ChessGUI:
         
     def wait_for_promotion(self):
         background = pygame.Rect(0, (0.125 * self.windowsize), self.windowsize, (0.0625 * self.windowsize))
-        waiting = True
-        while waiting:
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
+                    if self.darkmode:
+                        color = (0, 0, 0)
+                    else:
+                        color = (255, 255, 255)
                     if x > (0.18125 * self.windowsize) and x < (0.33125 * self.windowsize) and y > (self.windowsize * 0.125) and y < (0.1875 * self.windowsize):
-                        pygame.draw.rect(self.screen, (234, 255, 123), background)
+                        pygame.draw.rect(self.screen, color, background)
                         pygame.display.flip()
                         return 'Dame'
                     if x > (0.34375 * self.windowsize) and x < (0.49375 * self.windowsize) and y > (self.windowsize * 0.125) and y < (0.1875 * self.windowsize):
-                        pygame.draw.rect(self.screen, (234, 255, 123), background)
+                        pygame.draw.rect(self.screen, color, background)
                         pygame.display.flip()
                         return 'Turm'
                     if x > (0.50625 * self.windowsize) and x < (0.65625 * self.windowsize) and y > (self.windowsize * 0.125) and y < (0.1875 * self.windowsize):
-                        pygame.draw.rect(self.screen, (234, 255, 123), background)
+                        pygame.draw.rect(self.screen, color, background)
                         pygame.display.flip()
                         return 'Läufer'
                     if x > (0.66875 * self.windowsize) and x < (0.81875 * self.windowsize) and y > (self.windowsize * 0.125) and y < (0.1875 * self.windowsize):
-                        pygame.draw.rect(self.screen, (234, 255, 123), background)
+                        pygame.draw.rect(self.screen, color, background)
                         pygame.display.flip()
                         return 'Springer'
 
