@@ -4,11 +4,10 @@ import threading
 import os
 import webbrowser
 from ttkthemes import ThemedStyle
+
 if __name__ != "__main__":
     from .ChessGUI import ChessGUI
     from .images import image_editor
-
-
 
 
 class StartGUI:
@@ -21,11 +20,15 @@ class StartGUI:
         self.root.rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
 
-        self.icon = PhotoImage(file = f"{os.path.join(os.path.dirname(__file__), 'icon.png')}")
+        self.icon = PhotoImage(
+            file=f"{os.path.join(os.path.dirname(__file__), 'icon.png')}"
+        )
         self.root.iconphoto(True, self.icon)
 
         self.selected_option = IntVar()
         self.darkmodestate = IntVar()
+        self.ai = IntVar()
+        self.playblack = IntVar()
 
         self.frm = ttk.Frame(self.root)
         self.frm.grid(row=0, column=0, sticky="nsew")
@@ -39,7 +42,12 @@ class StartGUI:
         self.root.config(menu=self.menu)
 
         self.help_menu = Menu(self.menu, tearoff=0)
-        self.help_menu.add_command(label="GitHub",command=lambda: webbrowser.open('https://github.com/M3M0KA/PyChess', autoraise=True))
+        self.help_menu.add_command(
+            label="GitHub",
+            command=lambda: webbrowser.open(
+                "https://github.com/M3M0KA/PyChess", autoraise=True
+            ),
+        )
 
         self.menu.add_cascade(label="Hilfe", menu=self.help_menu)
 
@@ -49,44 +57,82 @@ class StartGUI:
         self.entry = ttk.Entry(self.frm, textvariable=1)
         self.entry.grid(column=1, row=4, sticky="w")
 
-        self.quitbutton = ttk.Button(self.frm, text="Start Game!", command=self.thread_startgame)
+        self.quitbutton = ttk.Button(
+            self.frm, text="Start Game!", command=self.thread_startgame
+        )
         self.quitbutton.grid(column=1, row=6, sticky="nsew")
 
-        self.option1 = ttk.Radiobutton(self.frm, value=0, variable=self.selected_option, text="600px (empfohlen)")
+        self.option1 = ttk.Radiobutton(
+            self.frm, value=0, variable=self.selected_option, text="600px (empfohlen)"
+        )
         self.option1.grid(column=0, row=1, sticky="nsew", padx=15)
 
-        self.option2 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=1, text="800px")
+        self.option2 = ttk.Radiobutton(
+            self.frm, variable=self.selected_option, value=1, text="800px"
+        )
         self.option2.grid(column=0, row=2, sticky="nsew", padx=15)
 
-        self.option3 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=2, text="400px")
+        self.option3 = ttk.Radiobutton(
+            self.frm, variable=self.selected_option, value=2, text="400px"
+        )
         self.option3.grid(column=0, row=3, sticky="nsew", padx=15)
 
-        self.option4 = ttk.Radiobutton(self.frm, variable=self.selected_option, value=3, text="eigene (in px)")
+        self.option4 = ttk.Radiobutton(
+            self.frm, variable=self.selected_option, value=3, text="eigene (in px)"
+        )
         self.option4.grid(column=0, row=4, sticky="nsew", padx=15)
 
-        self.darkmode = ttk.Checkbutton(self.frm, text="Dunkel", variable=self.darkmodestate, command=self.turn_to_the_dark)
+        self.darkmode = ttk.Checkbutton(
+            self.frm,
+            text="Dunkel",
+            variable=self.darkmodestate,
+            command=self.turn_to_the_dark,
+        )
         self.darkmode.grid(column=3, row=6)
 
+        self.playengine = ttk.Checkbutton(
+            self.frm,
+            text="Gegen KI",
+            variable=self.ai,
+            command=lambda: self.add_choose_piece_color(),
+        )
+        self.playengine.grid(column=3, row=7)
+
         self.combobox = ttk.Combobox(self.frm)
-        self.combobox["values"] = ("Klassisch",
-                                   "Klassisch 2",
-                                   "Grau",
-                                   "Grau 2",
-                                   "Grau 3",
-                                   "Grau 4",
-                                   "Grün",
-                                   "Gold",
-                                   "Pink",
-                                   "Blau",
-                                   "Violett",
-                                   "Rot",
-                                   "Vanilla")
+        self.combobox["values"] = (
+            "Klassisch",
+            "Klassisch 2",
+            "Grau",
+            "Grau 2",
+            "Grau 3",
+            "Grau 4",
+            "Grün",
+            "Gold",
+            "Pink",
+            "Blau",
+            "Violett",
+            "Rot",
+            "Vanilla",
+        )
         self.combobox.grid(column=3, row=2)
 
         self.turn_to_the_dark()
 
         self.root.mainloop()
 
+    def add_choose_piece_color(self):
+        if self.ai.get() == 1:
+            self.playblack = ttk.Checkbutton(
+                self.frm,
+                text="Schwarz spielen",
+                variable=self.playblack
+            )
+            self.playblack.grid(column=0, row=7)
+        else:
+            self.ai.set(0)
+            self.playblack.destroy()
+        
+    
     def thread_startgame(self):
         ori_color = self.combobox.get()
         print(ori_color)
@@ -119,11 +165,17 @@ class StartGUI:
 
         value = self.selected_option.get()
         if value == 0:
-            threading.Thread(target=self.run_game(600, color, self.darkmodestate.get())).start()
+            threading.Thread(
+                target=self.run_game(600, color, self.darkmodestate.get(), self.ai.get())
+            ).start()
         elif value == 1:
-            threading.Thread(target=self.run_game(800, color, self.darkmodestate.get())).start()
+            threading.Thread(
+                target=self.run_game(800, color, self.darkmodestate.get(), self.ai.get())
+            ).start()
         elif value == 2:
-            threading.Thread(target=self.run_game(400, color, self.darkmodestate.get())).start()
+            threading.Thread(
+                target=self.run_game(400, color, self.darkmodestate.get(), self.ai.get())
+            ).start()
         else:
             try:
                 size = int(round(float(self.entry.get()), 1))
@@ -134,13 +186,17 @@ class StartGUI:
                 return
             if size > 2000:
                 return
-            threading.Thread(target=self.run_game(size, color, self.darkmodestate.get())).start()
+            threading.Thread(
+                target=self.run_game(size, color, self.darkmodestate.get(), self.ai.get())
+            ).start()
 
-    def run_game(self, windowsize, boardcolor, darkmode):
+    def run_game(self, windowsize, boardcolor, darkmode, ai):
         self.editor = image_editor(windowsize)
         self.editor.create_copys()
         self.editor.resize()
-        self.chess_gui = ChessGUI(windowsize, boardcolor, self.editor.path, darkmode=darkmode)
+        self.chess_gui = ChessGUI(
+            windowsize, boardcolor, self.editor.path, darkmode=darkmode, ai=ai, playblack=self.playblack.get()
+        )
         self.chess_gui.run()
 
     def turn_to_the_dark(self):
@@ -155,14 +211,15 @@ class StartGUI:
                 style = ThemedStyle(i)
             style.set_theme("arc")
 
-    def all_children (self) :
+    def all_children(self):
         _list = self.root.winfo_children()
 
-        for item in _list :
-            if item.winfo_children() :
+        for item in _list:
+            if item.winfo_children():
                 _list.extend(item.winfo_children())
-        
+
         return _list
-    
+
+
 if __name__ == "__main__":
     gui = StartGUI()
