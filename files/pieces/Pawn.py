@@ -1,8 +1,11 @@
 from .ChessPiece import ChessPiece
 
 class Pawn(ChessPiece):
-    symbol = 'pawn'
-    
+    def __init__(self, color):
+        super().__init__(color)
+        self.symbol = 'pawn'
+        self.short_name = 'p'
+
     def is_valid_move(self, start, end, board):
         x1, y1 = start
         x2, y2 = end

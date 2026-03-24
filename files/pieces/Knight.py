@@ -1,7 +1,10 @@
 from .ChessPiece import ChessPiece
 
 class Knight(ChessPiece):
-    symbol = 'knight'
+    def __init__(self, color):
+        super().__init__(color)
+        self.symbol = 'knight'
+        self.short_name = 'n'
 
     def is_valid_move(self, start, end, board):
         x1, y1 = start

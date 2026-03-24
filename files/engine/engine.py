@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import chess
 import numpy as np
+import os
 
 
 class ResBlock(nn.Module):
@@ -51,7 +52,8 @@ class Engine:
     def __init__(self):
         self.device = torch.device("cpu")
         self.model = ChessModel().to(self.device)
-        weights = torch.load("chess_model.pth", map_location=torch.device('cpu'))
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        weights = torch.load(os.path.join(current_dir, "chess_model.pth"), map_location=torch.device("cpu"))
         self.model.load_state_dict(weights)
 
     def move(self, fen):
@@ -79,9 +81,7 @@ class Engine:
         fromsqintx, fromsqinty = fromsqint % 8, fromsqint // 8
         tosqintx, tosqinty = tosqint % 8, tosqint // 8
 
-        print((fromsqintx, 7-fromsqinty), (tosqintx, 7-tosqinty))
-
-        return ((fromsqintx, 7-fromsqinty), (tosqintx, 7-tosqinty))
+        return ((fromsqintx, 7 - fromsqinty), (tosqintx, 7 - tosqinty))
 
     def fen_to_16_layers(self, fen):
         board = chess.Board(fen)
@@ -89,7 +89,7 @@ class Engine:
 
         for color in [chess.WHITE, chess.BLACK]:
             offset = 0 if color == chess.WHITE else 6
-            for piece_type in range(1, 7): # 1=Pawn, 6=King
+            for piece_type in range(1, 7):  # 1=Pawn, 6=King
                 mask = board.pieces(piece_type, color)
                 for square in mask:
                     row, col = 7 - (square // 8), square % 8
@@ -105,7 +105,7 @@ class Engine:
             t_row, t_col = 7 - (move.to_square // 8), move.to_square % 8
             matrix[13, f_row, f_col] = 1.0
             matrix[14, t_row, t_col] = 1.0
-        
+
         # Layer 15: Castling Rights
         if board.has_kingside_castling_rights(chess.WHITE):
             matrix[15, 0:4, 4:8] = 1.0  # White kingside (bottom-right quadrant)

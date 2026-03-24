@@ -17,6 +17,49 @@ def create_board():
     return board
 
 
+def board_to_fen(board, current_color):
+
+    fen = ""
+    for row in board:
+        empty_count = 0
+        for piece in row:
+            if piece is None or isinstance(piece, EnPassantGhost):
+                empty_count += 1
+            else:
+                if empty_count > 0:
+                    fen += str(empty_count)
+                    empty_count = 0
+                symbol = (
+                    piece.short_name.upper()
+                    if piece.color == "W"
+                    else piece.short_name.lower()
+                )
+                fen += symbol
+        if empty_count > 0:
+            fen += str(empty_count)
+        fen += "/"
+    fen = fen[:-1]
+    fen += " " + ("w" if current_color == "W" else "b") + " " + castleling_rights() + " -"
+    return fen
+
+
+def castleling_rights():
+    rights = ""
+    if not w_has_king_moved:
+        if not w_has_right_rook_moved:
+            rights += "K"
+        if not w_has_left_rook_moved:
+            rights += "Q"
+
+    if not b_has_king_moved:
+        if not b_has_right_rook_moved:
+            rights += "k"
+        if not b_has_left_rook_moved:
+            rights += "q"
+
+    return rights if rights else "-"
+
+
 def parse_input(move):
     try:
         start, end = move.split()

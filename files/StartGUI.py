@@ -1,5 +1,4 @@
-from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, Tk, PhotoImage, Menu, IntVar
 import threading
 import os
 import webbrowser
@@ -195,7 +194,7 @@ class StartGUI:
         self.editor.create_copys()
         self.editor.resize()
         self.chess_gui = ChessGUI(
-            windowsize, boardcolor, self.editor.path, darkmode=darkmode, ai=ai, playblack=self.black.get()
+            windowsize, boardcolor, self.editor.path(), darkmode=darkmode, ai=ai, playblack=self.black.get()
         )
         self.chess_gui.run()
 

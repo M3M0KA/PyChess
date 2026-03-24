@@ -3,7 +3,7 @@ from .engine.engine import Engine
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
-from .logic import move_piece, create_board, set_global_variables
+from .logic import move_piece, create_board, set_global_variables, board_to_fen
 from .pieces import ChessPiece
 from .images import image_editor
 
@@ -210,7 +210,7 @@ class ChessGUI:
 
         if (
             self.board[pos1[1]][pos1[0]] is None
-            or self.board[pos1[1]][pos1[0]].color != "W" if self.playblack else "B"
+            or self.board[pos1[1]][pos1[0]].color != ("W" if self.playblack else "B")
             or not isinstance(self.board[pos1[1]][pos1[0]], ChessPiece)
         ):
             print("NVM")
@@ -326,11 +326,12 @@ class ChessGUI:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if self.ai and self.current_color == "AI":
+                        if self.ai_move(*self.engine.twoindexreturn(self.engine.move(board_to_fen(self.board, self.current_color)))) == "NVM":
+                            print("AI move failed")
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if someone_won:
-                        break
-                    if self.ai and self.current_color == "AI":
-                        self.ai_move(*self.engine.twoindexreturn(self.engine.move("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1")))
+                        running = False
                     else:
                         self.handle_click(event.pos)
                         

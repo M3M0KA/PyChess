@@ -15,8 +15,8 @@ class image_editor:
 
     def create_copys(self):
         for file in os.listdir(self.src_path):
-            copy (os.path.join(self.src_path, file), self.dst_path)
-        
+            copy(os.path.join(self.src_path, file), self.dst_path)
+
     def resize(self):
         for file in os.listdir(self.dst_path):
             img = Image.open(os.path.join(self.dst_path, file))
@@ -27,11 +27,10 @@ class image_editor:
     def rmv(self):
         for file in os.listdir(self.dst_path):
             os.remove(os.path.join(self.dst_path, file))
-        
 
-    @property
     def path(self):
         return self.temp_images.name
+
 
 if __name__ == "__main__":
     editor = image_editor(800)

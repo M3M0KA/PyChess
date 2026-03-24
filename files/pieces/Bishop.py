@@ -2,7 +2,10 @@ from .ChessPiece import ChessPiece
 from .EnPassantGhost import EnPassantGhost
 
 class Bishop(ChessPiece):
-    symbol = 'bishop'
+    def __init__(self, color):
+        super().__init__(color)
+        self.symbol = 'bishop'
+        self.short_name = 'b'
 
     def is_valid_move(self, start, end, board):
         x1, y1 = start

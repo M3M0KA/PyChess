@@ -2,7 +2,10 @@ from .ChessPiece import ChessPiece
 from .EnPassantGhost import EnPassantGhost
 
 class Rook(ChessPiece):
-    symbol = 'rook'
+    def __init__(self, color):
+        super().__init__(color)
+        self.symbol = 'rook'
+        self.short_name = 'r'
 
     def is_valid_move(self, start, end, board):
         x1, y1 = start
