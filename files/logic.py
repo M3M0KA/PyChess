@@ -118,7 +118,7 @@ def is_rochade_possible(board, side, current_color, piece, x1, x2, y1, y2):
                         return False
 
 
-def move_piece(board, start, end, current_color, gui):
+def move_piece(board, start, end, current_color, ai, gui):
     global w_has_king_moved, w_has_left_rook_moved, w_has_right_rook_moved
     global b_has_king_moved, b_has_left_rook_moved, b_has_right_rook_moved
     x1, y1 = start

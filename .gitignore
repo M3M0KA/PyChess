@@ -180,3 +180,4 @@ lib64
 pyvenv.cfg
 bin/
 include/
+Scripts/

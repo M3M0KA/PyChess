@@ -1,4 +1,5 @@
 import os
+from .engine.engine import Engine
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
@@ -13,6 +14,7 @@ colors = ["w", "b"]
 
 class ChessGUI:
     def __init__(self, windowsize, boardcolor, path, darkmode, ai, playblack):
+        self.engine = Engine()
         self.darkmode = darkmode
         self.ai = ai
         self.playblack = playblack
@@ -193,8 +195,9 @@ class ChessGUI:
                 self.temp2 = (x, y)
                 start, end = self.temp1, self.temp2
                 if start and end:
-                    if move_piece(self.board, start, end, self.current_color, self):
+                    if move_piece(self.board, start, end, self.current_color, False, self):
                         self.current_color = "B" if self.current_color == "W" else "W"
+                        self.current_color = "AI" if self.ai else self.current_color
                     else:
                         print("Ungültiger Zug!")
                 else:
@@ -202,6 +205,24 @@ class ChessGUI:
                 self.update(self.board)
                 self.temp1 = None
                 self.temp2 = None
+
+    def ai_move(self, pos1, pos2):
+
+        if (
+            self.board[pos1[1]][pos1[0]] is None
+            or self.board[pos1[1]][pos1[0]].color != "W" if self.playblack else "B"
+            or not isinstance(self.board[pos1[1]][pos1[0]], ChessPiece)
+        ):
+            print("NVM")
+            return "NVM"
+
+        start, end = pos1, pos2
+        if move_piece(self.board, start, end, "W" if self.playblack else "B", True, self):
+            self.current_color = "B" if self.playblack else "W"
+        else:
+            print("NVM")
+            return "NVM"
+        self.update(self.board)
 
     def win(self, winner):
         font = pygame.font.Font(None, 50)
@@ -298,9 +319,9 @@ class ChessGUI:
         self.board = create_board()
         self.update(self.board)
         running = True
-        is_first_move = True
         global someone_won
         someone_won = False
+        set_global_variables()
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -308,9 +329,10 @@ class ChessGUI:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if someone_won:
                         break
-                    self.handle_click(event.pos)
-                    if is_first_move:
-                        set_global_variables()
-                        is_first_move = False
+                    if self.ai and self.current_color == "AI":
+                        self.ai_move(*self.engine.twoindexreturn(self.engine.move("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1")))
+                    else:
+                        self.handle_click(event.pos)
+                        
         image_editor(None).rmv()
         pygame.quit()

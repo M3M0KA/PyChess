@@ -28,7 +28,7 @@ class StartGUI:
         self.selected_option = IntVar()
         self.darkmodestate = IntVar()
         self.ai = IntVar()
-        self.playblack = IntVar()
+        self.black = IntVar()
 
         self.frm = ttk.Frame(self.root)
         self.frm.grid(row=0, column=0, sticky="nsew")
@@ -121,15 +121,15 @@ class StartGUI:
         self.root.mainloop()
 
     def add_choose_piece_color(self):
-        if self.ai.get() == 1:
+        if self.ai.get():
             self.playblack = ttk.Checkbutton(
                 self.frm,
                 text="Schwarz spielen",
-                variable=self.playblack
+                variable=self.black
             )
             self.playblack.grid(column=0, row=7)
         else:
-            self.ai.set(0)
+            self.black.set(0)
             self.playblack.destroy()
         
     
@@ -195,7 +195,7 @@ class StartGUI:
         self.editor.create_copys()
         self.editor.resize()
         self.chess_gui = ChessGUI(
-            windowsize, boardcolor, self.editor.path, darkmode=darkmode, ai=ai, playblack=self.playblack.get()
+            windowsize, boardcolor, self.editor.path, darkmode=darkmode, ai=ai, playblack=self.black.get()
         )
         self.chess_gui.run()
 
