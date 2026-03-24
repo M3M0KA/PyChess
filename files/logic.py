@@ -88,7 +88,7 @@ def is_rochade_possible(board, side, current_color, piece, x1, x2, y1, y2):
         if current_color == "W":
             if not w_has_king_moved and y1 == 7 and x1 == 4:
                 if board[7][5] is None and board[7][6] is None:
-                    if x2 == 6 and not w_has_right_rook_moved:
+                    if x2 == 7 and not w_has_right_rook_moved:
                         copy_board = copy.deepcopy(board)
                         if not is_check(copy_board, "W", find_king(copy_board, "W")):
                             copy_board[7][5] = King("W")
@@ -106,7 +106,7 @@ def is_rochade_possible(board, side, current_color, piece, x1, x2, y1, y2):
         if current_color == "B":
             if not b_has_king_moved and y1 == 0 and x1 == 4:
                 if board[0][5] is None and board[0][6] is None:
-                    if x2 == 6 and not b_has_right_rook_moved:
+                    if x2 == 7 and not b_has_right_rook_moved:
                         copy_board = copy.deepcopy(board)
                         if not is_check(copy_board, "B", find_king(copy_board, "B")):
                             copy_board[0][5] = King("B")
@@ -126,7 +126,7 @@ def is_rochade_possible(board, side, current_color, piece, x1, x2, y1, y2):
         if current_color == "W":
             if not w_has_king_moved and y1 == 7 and x1 == 4:
                 if board[7][3] is None and board[7][2] is None and board[7][1] is None:
-                    if x2 == 2 and not w_has_left_rook_moved:
+                    if x2 == 0 and not w_has_left_rook_moved:
                         copy_board = copy.deepcopy(board)
                         if not is_check(copy_board, "W", find_king(copy_board, "W")):
                             copy_board[7][3] = King("W")
@@ -144,7 +144,7 @@ def is_rochade_possible(board, side, current_color, piece, x1, x2, y1, y2):
         if current_color == "B":
             if not b_has_king_moved and y1 == 0 and x1 == 4:
                 if board[0][3] is None and board[0][2] is None and board[0][1] is None:
-                    if x2 == 2 and not b_has_left_rook_moved:
+                    if x2 == 0 and not b_has_left_rook_moved:
                         copy_board = copy.deepcopy(board)
                         if not is_check(copy_board, "B", find_king(copy_board, "B")):
                             copy_board[0][3] = King("B")

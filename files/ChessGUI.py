@@ -329,6 +329,9 @@ class ChessGUI:
                 if self.ai and self.current_color == "AI":
                         if self.ai_move(*self.engine.twoindexreturn(self.engine.move(board_to_fen(self.board, self.current_color)))) == "NVM":
                             print("AI move failed")
+                            print("Board FEN:", board_to_fen(self.board, self.current_color))
+                            print(*self.engine.twoindexreturn(self.engine.move(board_to_fen(self.board, self.current_color))))
+                            running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if someone_won:
                         running = False

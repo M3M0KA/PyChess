@@ -36,11 +36,13 @@ class ChessModel(nn.Module):
         self.lin = nn.Linear(2 * 8 * 8, 4096)
         self.blocks3 = nn.Sequential(*[ResBlock(128) for _ in range(3)])
         self.blocks31 = nn.Sequential(*[ResBlock(128) for _ in range(3)])
+        self.blocks32 = nn.Sequential(*[ResBlock(128) for _ in range(3)])
 
     def forward(self, x):
         x = self.relu(self.normalize(self.conv(x)))
         x = self.blocks3(x)
         x = self.blocks31(x)
+        x = self.blocks32(x)
         x = self.relu(self.normalize1(self.conv1(x)))
         x = torch.flatten(x, 1)
         x = self.lin(x)

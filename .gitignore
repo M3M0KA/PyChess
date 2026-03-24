@@ -181,3 +181,6 @@ pyvenv.cfg
 bin/
 include/
 Scripts/
+
+# python
+__pycache__/
