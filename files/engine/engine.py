@@ -30,24 +30,25 @@ class ChessModel(nn.Module):
         super(ChessModel, self).__init__()
         self.relu = nn.ReLU()
         self.conv = nn.Conv2d(16, 128, kernel_size=3, padding=1)
-        self.conv1 = nn.Conv2d(128, 2, kernel_size=1)
+        self.conv1 = nn.Conv2d(128, 64, kernel_size=1)
+        self.normalize0 = nn.BatchNorm2d(128)
         self.normalize = nn.BatchNorm2d(128)
-        self.normalize1 = nn.BatchNorm2d(2)
-        self.lin = nn.Linear(2 * 8 * 8, 4096)
-        self.blocks3 = nn.Sequential(*[ResBlock(128) for _ in range(3)])
-        self.blocks31 = nn.Sequential(*[ResBlock(128) for _ in range(3)])
-        self.blocks32 = nn.Sequential(*[ResBlock(128) for _ in range(3)])
+        self.normalize1 = nn.BatchNorm2d(64)
+        self.lin = nn.Linear(64 * 8 * 8, 4096)
+        self.pos_embedding = nn.Parameter(torch.randn(1, 64, 128))
+        self.blocks = nn.Sequential(*[ResBlock(128) for _ in range(9)])
 
     def forward(self, x):
         x = self.relu(self.normalize(self.conv(x)))
-        x = self.blocks3(x)
-        x = self.blocks31(x)
-        x = self.blocks32(x)
+
+        x = self.blocks(x)
+
         x = self.relu(self.normalize1(self.conv1(x)))
         x = torch.flatten(x, 1)
         x = self.lin(x)
 
         return x
+
 
 
 class Engine:

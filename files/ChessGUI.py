@@ -197,7 +197,6 @@ class ChessGUI:
                 if start and end:
                     if move_piece(self.board, start, end, self.current_color, False, self):
                         self.current_color = "B" if self.current_color == "W" else "W"
-                        self.current_color = "AI" if self.ai else self.current_color
                     else:
                         print("Ungültiger Zug!")
                 else:
@@ -326,7 +325,7 @@ class ChessGUI:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                if self.ai and self.current_color == "AI":
+                if self.ai and self.current_color == ("W" if self.playblack else "B"):
                         if self.ai_move(*self.engine.twoindexreturn(self.engine.move(board_to_fen(self.board, self.current_color)))) == "NVM":
                             print("AI move failed")
                             print("Board FEN:", board_to_fen(self.board, self.current_color))
