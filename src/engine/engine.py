@@ -10,11 +10,8 @@ from evaluator import (
     fen_to_layers as eval_fen_to_layers,
 )
 
-width_tree = 6
+width_tree = 12
 depth_tree = 6
-# this is only the minimum depth, quiescence will usually make it extend more
-# also, tree grows with width_tree ** depth_tree
-# soooo... change carefully
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -53,7 +50,6 @@ class MoveIndexer:
 class Engine:
     def __init__(self):
         self.move_indexer = MoveIndexer()
-        self.cutted = 0
         self.selector = SelectorModel().to(device)
         self.evaluator = EvaluatorModel().to(device)
 
@@ -78,7 +74,10 @@ class Engine:
             )
             output = self.selector(input_tensor)
             board = bulletchess.Board.from_fen(fen)
-            for move in board.legal_moves():
+            mask = torch.full_like(output, float("-inf"))
+            legal_moves = board.legal_moves()
+            length = len(legal_moves)
+            for move in legal_moves:
                 uci = (
                     (move.origin.index(), move.destination.index())
                     if not is_black
@@ -89,9 +88,13 @@ class Engine:
                 )
                 index = self.move_indexer.get_index(uci)
 
-                output[0][index] += 1000
+                if mask[0][index] == float("-inf"):
+                    mask[0][index] = output[0][index]
+                else:
+                    length -= 1
+                    continue
 
-            score, bk = torch.topk(output, k=min(len(board.legal_moves()), width_tree))
+            score, bk = torch.topk(mask, k=min(length, width_tree))
 
         output = []
         if not return_moves:

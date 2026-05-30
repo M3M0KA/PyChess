@@ -1,4 +1,6 @@
 import os
+import sys
+import threading
 from .engine.engine import Engine
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
@@ -17,6 +19,8 @@ class ChessGUI:
         self.engine = Engine()
         self.darkmode = darkmode
         self.ai = ai
+        self.doupdate = False
+        self.thinking = False
         self.playblack = playblack
         self.path = path
         self.windowsize = windowsize
@@ -207,25 +211,42 @@ class ChessGUI:
                 self.temp1 = None
                 self.temp2 = None
 
-    def ai_move(self, pos1, pos2):
+    def generate_ai_move(self):
+        self.ai_move = self.engine.handle_fen(
+            board_to_fen(self.board, self.current_color)
+        )[0].uci()
+        self.ai_do_move(
+            *self.engine.twoindexreturn(self.engine.uci_to_index(self.ai_move)),
+            self.ai_move,
+        )
 
+    def ai_do_move(self, pos1, pos2, move):
         if (
             self.board[pos1[1]][pos1[0]] is None
             or self.board[pos1[1]][pos1[0]].color != ("W" if self.playblack else "B")
             or not isinstance(self.board[pos1[1]][pos1[0]], ChessPiece)
         ):
+            self.thinking = False
             print("NVM")
+            print("AI move failed")
+            print("Board FEN:", board_to_fen(self.board, self.current_color))
+            print(*self.engine.twoindexreturn(self.engine.uci_to_index(move)))
             return "NVM"
 
         start, end = pos1, pos2
         if move_piece(
             self.board, start, end, "W" if self.playblack else "B", True, self
         ):
+            self.thinking = False
             self.current_color = "B" if self.playblack else "W"
         else:
+            self.thinking = False
             print("NVM")
+            print("AI move failed")
+            print("Board FEN:", board_to_fen(self.board, self.current_color))
+            print(*self.engine.twoindexreturn(self.engine.uci_to_index(move)))
             return "NVM"
-        self.update(self.board)
+        self.doupdate = True
 
     def win(self, winner):
         font = pygame.font.Font(None, 50)
@@ -274,7 +295,7 @@ class ChessGUI:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    exit()
+                    sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
                     if self.darkmode:
@@ -321,37 +342,40 @@ class ChessGUI:
     def run(self):
         self.board = create_board()
         self.update(self.board)
-        running = True
+        self.running = True
         global someone_won
         someone_won = False
         set_global_variables()
-        while running:
+        clock = pygame.time.Clock()
+        while self.running:
+            if self.doupdate:
+                self.update(self.board)
+                self.doupdate = False
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.running = False
+                if self.thinking:
+                    continue
                 if self.ai and self.current_color == ("W" if self.playblack else "B"):
-                    move = self.engine.handle_fen(
-                        board_to_fen(self.board, self.current_color)
-                    )[0].uci()
-                    if (
-                        self.ai_move(
-                            *self.engine.twoindexreturn(self.engine.uci_to_index(move))
-                        )
-                        == "NVM"
-                    ):
-                        print("AI move failed")
-                        print(
-                            "Board FEN:", board_to_fen(self.board, self.current_color)
-                        )
-                        print(
-                            *self.engine.twoindexreturn(self.engine.uci_to_index(move))
-                        )
-                        running = False
+                    if someone_won:
+                        while True:
+                            for event in pygame.event.get():
+                                if (
+                                    event.type == pygame.QUIT
+                                    or event.type == pygame.MOUSEBUTTONDOWN
+                                ):
+                                    sys.exit()
+
+                    self.thinking = True
+                    threading.Thread(target=self.generate_ai_move).start()
+
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if someone_won:
-                        running = False
+                        self.running = False
                     else:
                         self.handle_click(event.pos)
+            clock.tick(60)
 
         image_editor(None).rmv()
         pygame.quit()
