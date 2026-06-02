@@ -10,8 +10,8 @@ from evaluator import (
     fen_to_layers as eval_fen_to_layers,
 )
 
-width_tree = 12
-depth_tree = 6
+width_tree = 8
+depth_tree = 4
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

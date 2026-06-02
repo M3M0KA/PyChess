@@ -122,16 +122,13 @@ class StartGUI:
     def add_choose_piece_color(self):
         if self.ai.get():
             self.playblack = ttk.Checkbutton(
-                self.frm,
-                text="Schwarz spielen",
-                variable=self.black
+                self.frm, text="Schwarz spielen", variable=self.black
             )
             self.playblack.grid(column=0, row=7)
         else:
             self.black.set(0)
             self.playblack.destroy()
-        
-    
+
     def thread_startgame(self):
         ori_color = self.combobox.get()
         print(ori_color)
@@ -165,15 +162,21 @@ class StartGUI:
         value = self.selected_option.get()
         if value == 0:
             threading.Thread(
-                target=self.run_game(600, color, self.darkmodestate.get(), self.ai.get())
+                target=self.run_game(
+                    600, color, self.darkmodestate.get(), self.ai.get()
+                )
             ).start()
         elif value == 1:
             threading.Thread(
-                target=self.run_game(800, color, self.darkmodestate.get(), self.ai.get())
+                target=self.run_game(
+                    800, color, self.darkmodestate.get(), self.ai.get()
+                )
             ).start()
         elif value == 2:
             threading.Thread(
-                target=self.run_game(400, color, self.darkmodestate.get(), self.ai.get())
+                target=self.run_game(
+                    400, color, self.darkmodestate.get(), self.ai.get()
+                )
             ).start()
         else:
             try:
@@ -186,7 +189,9 @@ class StartGUI:
             if size > 2000:
                 return
             threading.Thread(
-                target=self.run_game(size, color, self.darkmodestate.get(), self.ai.get())
+                target=self.run_game(
+                    size, color, self.darkmodestate.get(), self.ai.get()
+                )
             ).start()
 
     def run_game(self, windowsize, boardcolor, darkmode, ai):
@@ -194,7 +199,12 @@ class StartGUI:
         self.editor.create_copys()
         self.editor.resize()
         self.chess_gui = ChessGUI(
-            windowsize, boardcolor, self.editor.path(), darkmode=darkmode, ai=ai, playblack=self.black.get()
+            windowsize,
+            boardcolor,
+            self.editor.path(),
+            darkmode=darkmode,
+            ai=ai,
+            playblack=self.black.get(),
         )
         self.chess_gui.run()
 

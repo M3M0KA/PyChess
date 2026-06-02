@@ -1,5 +1,4 @@
 import os
-import sys
 import threading
 from .engine.engine import Engine
 
@@ -262,8 +261,32 @@ class ChessGUI:
                 text = font.render(f"{winner} gewinnt!", True, (0, 0, 0))
         self.screen.blit(text, ((0.4375 * self.windowsize), (0.875 * self.windowsize)))
         pygame.display.flip()
-        global someone_won
-        someone_won = True
+        self.someone_won = True
+
+    def show_ai_thinking(self, thinking):
+        if thinking:
+            font = pygame.font.Font(None, int(0.0375 * self.windowsize))
+            if self.darkmode:
+                text = font.render("KI denkt...", True, (255, 255, 255))
+            else:
+                text = font.render("KI denkt...", True, (0, 0, 0))
+            self.screen.blit(
+                text,
+                ((0.4375 * self.windowsize), (0.0625 * self.windowsize)),
+            )
+        else:
+            if self.darkmode:
+                color = (0, 0, 0)
+            else:
+                color = (255, 255, 255)
+            rect = pygame.Rect(
+                0,
+                (0.0625 * self.windowsize),
+                self.windowsize,
+                (0.0375 * self.windowsize),
+            )
+            pygame.draw.rect(self.screen, color, rect)
+        pygame.display.flip()
 
     def promotion_options(self, screen):
         font = pygame.font.Font(None, int(0.0375 * self.windowsize))
@@ -289,13 +312,16 @@ class ChessGUI:
         pygame.display.flip()
 
     def wait_for_promotion(self):
+        if self.ai and self.current_color == ("W" if self.playblack else "B"):
+            return "Dame"
         background = pygame.Rect(
             0, (0.125 * self.windowsize), self.windowsize, (0.0625 * self.windowsize)
         )
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    sys.exit()
+                    self.running = False
+                    break
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
                     if self.darkmode:
@@ -343,38 +369,38 @@ class ChessGUI:
         self.board = create_board()
         self.update(self.board)
         self.running = True
-        global someone_won
-        someone_won = False
+        self.someone_won = False
         set_global_variables()
         clock = pygame.time.Clock()
         while self.running:
             if self.doupdate:
                 self.update(self.board)
+                self.show_ai_thinking(False)
                 self.doupdate = False
+
+            if self.someone_won:
+                while True:
+                    for event in pygame.event.get():
+                        if (
+                            event.type == pygame.QUIT
+                            or event.type == pygame.MOUSEBUTTONDOWN
+                        ):
+                            self.running = False
+                            break
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                    break
                 if self.thinking:
                     continue
                 if self.ai and self.current_color == ("W" if self.playblack else "B"):
-                    if someone_won:
-                        while True:
-                            for event in pygame.event.get():
-                                if (
-                                    event.type == pygame.QUIT
-                                    or event.type == pygame.MOUSEBUTTONDOWN
-                                ):
-                                    sys.exit()
-
                     self.thinking = True
+                    self.show_ai_thinking(True)
                     threading.Thread(target=self.generate_ai_move).start()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if someone_won:
-                        self.running = False
-                    else:
-                        self.handle_click(event.pos)
+                    self.handle_click(event.pos)
             clock.tick(60)
 
         image_editor(None).rmv()
