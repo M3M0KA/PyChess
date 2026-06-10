@@ -39,7 +39,9 @@ def board_to_fen(board, current_color):
             fen += str(empty_count)
         fen += "/"
     fen = fen[:-1]
-    fen += " " + ("w" if current_color == "W" else "b") + " " + castleling_rights() + " -"
+    fen += (
+        " " + ("w" if current_color == "W" else "b") + " " + castleling_rights() + " -"
+    )
     return fen
 
 
@@ -239,8 +241,11 @@ def move_piece(board, start, end, current_color, ai, gui):
                 return False
             if isinstance(piece, Pawn):
                 if piece.turn_to_differentpiece(y2):
-                    gui.promotion_options(gui.screen)
-                    new_piece = gui.wait_for_promotion()
+                    if ai:
+                        new_piece = "dame"
+                    else:
+                        gui.promotion_options(gui.screen)
+                        new_piece = gui.wait_for_promotion()
                     if new_piece.lower() == "dame":
                         board[y2][x2] = Queen(piece.color)
                         board[y1][x1] = None

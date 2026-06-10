@@ -312,8 +312,6 @@ class ChessGUI:
         pygame.display.flip()
 
     def wait_for_promotion(self):
-        if self.ai and self.current_color == ("W" if self.playblack else "B"):
-            return "Dame"
         background = pygame.Rect(
             0, (0.125 * self.windowsize), self.windowsize, (0.0625 * self.windowsize)
         )
