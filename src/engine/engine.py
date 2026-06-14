@@ -92,7 +92,6 @@ class Engine:
                     mask[0][index] = output[0][index]
                 else:
                     length -= 1
-                    continue
 
             score, bk = torch.topk(mask, k=min(length, width_tree))
 
@@ -112,7 +111,9 @@ class Engine:
             evaluation = self.evaluator(input_tensor).item()
             return evaluation
 
-    def handle_fen(self, fen: str, depth: int = depth_tree):
+    def handle_fen(
+        self, fen: str, depth: int = depth_tree
+    ) -> list[bulletchess.Move, float]:
         best = [float("-inf"), None]  # [evaluation, move]
         board = bulletchess.Board.from_fen(fen)
         self.cutted = 0
@@ -124,6 +125,7 @@ class Engine:
             try:
                 board.apply(move)
             except ValueError:
+                print("why is here an error?")
                 continue
 
             evaluation = self.minimax(board.fen(), True, depth - 1, alpha)
@@ -152,14 +154,14 @@ class Engine:
         board = bulletchess.Board.from_fen(fen)
 
         if minimizing:
-            best = float("inf")
+            best = 999999999
             for move in self.select_move(fen, return_moves=True):
                 try:
                     board.apply(move)
                 except ValueError:
                     continue
                 if board in bulletchess.CHECKMATE:
-                    evaluation = float("-inf")
+                    evaluation = -999999999
                 else:
                     evaluation = self.minimax(
                         board.fen(),
@@ -181,14 +183,14 @@ class Engine:
             return best
 
         else:
-            best = float("-inf")
+            best = -999999999
             for move in self.select_move(fen, return_moves=True):
                 try:
                     board.apply(move)
                 except ValueError:
                     continue
                 if board in bulletchess.CHECKMATE:
-                    evaluation = float("inf")
+                    evaluation = 999999999
                 else:
                     evaluation = self.minimax(
                         board.fen(),
@@ -238,7 +240,7 @@ class Engine:
                     except ValueError:
                         continue
                     if board in bulletchess.CHECKMATE:
-                        evaluation = float("-inf")
+                        evaluation = -999999999
                     else:
                         evaluation = self.quiescence(
                             minimizing=False,
@@ -262,7 +264,7 @@ class Engine:
                     except ValueError:
                         continue
                     if board in bulletchess.CHECKMATE:
-                        evaluation = float("inf")
+                        evaluation = 999999999
                     else:
                         evaluation = self.quiescence(
                             minimizing=True,

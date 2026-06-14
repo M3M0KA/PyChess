@@ -18,7 +18,6 @@ def create_board():
 
 
 def board_to_fen(board, current_color):
-
     fen = ""
     for row in board:
         empty_count = 0
