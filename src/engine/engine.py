@@ -10,6 +10,8 @@ from evaluator import (
     fen_to_layers as eval_fen_to_layers,
 )
 
+compile_model = True
+
 width_tree = 30
 depth_tree = 4
 
@@ -53,14 +55,16 @@ class Engine:
         self.selector = SelectorModel().to(device)
         self.evaluator = EvaluatorModel().to(device)
 
-        selector_weights = torch.load(sel_path)
-        evaluator_weights = torch.load(eval_path)
+        selector_weights = torch.load(sel_path) if torch.cuda.is_available() else torch.load(sel_path, map_location=torch.device('cpu'))
+        evaluator_weights = torch.load(eval_path) if torch.cuda.is_available() else torch.load(eval_path, map_location=torch.device('cpu'))
 
         self.selector.load_state_dict(selector_weights)
         self.evaluator.load_state_dict(evaluator_weights)
 
-        self.selector = torch.compile(self.selector, mode="reduce-overhead")
-        self.evaluator = torch.compile(self.evaluator, mode="reduce-overhead")
+        if compile_model:
+            self.selector = torch.compile(self.selector, mode="reduce-overhead")
+            self.evaluator = torch.compile(self.evaluator, mode="reduce-overhead")
+
 
     def select_move(
         self, fen: str, width_tree: int = width_tree, return_moves: bool = False
